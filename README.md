@@ -11,7 +11,7 @@ We can divide the solution into parts below:
 
 That's it! 
 
-There are some examples below will help to make it clearer.
+There are some examples below, which will help to make some details clearer.
 
 # Usage
 
