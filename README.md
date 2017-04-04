@@ -9,7 +9,9 @@ We can divide the solution into parts below:
 * construct API parameters with those plane POJOs;
 * transfer (map) values from Entity to POJO and vice versa;
 
-**//TODO: compleate this section**
+That's it! 
+
+There are some examples below will help to make it clearer.
 
 # Usage
 
