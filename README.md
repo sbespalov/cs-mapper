@@ -7,7 +7,7 @@ If we imagine a standard **_JavaEE_** application, then, as a rule, it has a "La
 We can divide the solution into three parts:
 * generate plane POJOs, based on JPA Entity model;
 * construct API parameters with those plane POJOs;
-* transfer (map) values from Entity to POJO and vice versa;
+* merge values from Entity to POJO and vice versa;
 
 That's it! 
 
