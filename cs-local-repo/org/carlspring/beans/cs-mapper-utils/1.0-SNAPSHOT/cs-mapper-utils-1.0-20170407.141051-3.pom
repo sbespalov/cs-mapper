@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.carlspring.beans</groupId>
+		<artifactId>cs-mapper-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../cs-mapper-parent/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>cs-mapper-utils</artifactId>
+	<name>${pom.artifactId}</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sun</groupId>
+			<artifactId>tools</artifactId>
+		</dependency>
+    </dependencies>
+</project>
