@@ -7,7 +7,7 @@
 		<groupId>org.carlspring.beans</groupId>
 		<artifactId>cs-mapper-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath>./cs-mappoer-parent/pom.xml</relativePath>
+		<relativePath>cs-mapper-parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>cs-mapper-build</artifactId>
@@ -31,7 +31,8 @@
 	</build>
 
 	<modules>
-		<module>cs-mapper</module>
+		<module>cs-mapper-core</module>
+		<module>cs-mapper-utils</module>
 	</modules>
 
 </project>
