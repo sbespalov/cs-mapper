@@ -35,7 +35,7 @@ public class AnnotationMappingBuilder implements MappingBuilder
             List<PropertyDescriptor> propertyDescriptors;
             try
             {
-                propertyDescriptors = BeanUtils.getPropertyDescriptors(type);
+                propertyDescriptors = CSBeanUtils.getPropertyDescriptors(type);
             }
             catch (IntrospectionException e)
             {
@@ -66,8 +66,7 @@ public class AnnotationMappingBuilder implements MappingBuilder
         }
     }
 
-    private <T extends Annotation> T getAnnotation(
-                                                   Class type,
+    private <T extends Annotation> T getAnnotation(Class type,
                                                    Method method,
                                                    Class<T> annotationClass)
     {

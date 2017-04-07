@@ -3,7 +3,7 @@ package org.carlspring.beans.mapper.spring;
 import java.util.List;
 
 import org.carlspring.beans.mapper.AnnotationMappingBuilder;
-import org.carlspring.beans.mapper.BeanHelper;
+import org.carlspring.beans.mapper.CSBeanMapper;
 import org.carlspring.beans.mapper.DefaultMappingProfile;
 import org.carlspring.beans.mapper.MappingConfig;
 import org.carlspring.beans.mapper.MappingProfile;
@@ -14,64 +14,45 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * @author Sergey Bespalov
  */
-public class BeanHelperFactoryBean implements FactoryBean<BeanHelper>, InitializingBean
+public class BeanHelperFactoryBean implements FactoryBean<CSBeanMapper>, InitializingBean
 {
 
     private List<Class<?>> mappedClasses;
     private List<String> mappingLocations;
-    private BeanHelper beanMapper;
+    private CSBeanMapper beanMapper;
     private MappingProfile mappingProfile;
     private ClassLoader beanClassLoader;
-    private Class<? extends BeanHelper> beanHelperClass;
+    private Class<? extends CSBeanMapper> beanHelperClass;
 
     public BeanHelperFactoryBean()
     {
         super();
         beanClassLoader = Thread.currentThread().getContextClassLoader();
-        beanHelperClass = BeanHelper.class;
+        beanHelperClass = CSBeanMapper.class;
         mappingProfile = new DefaultMappingProfile();
     }
 
-    public Class<? extends BeanHelper> getBeanHelperClass()
+    public Class<? extends CSBeanMapper> getBeanHelperClass()
     {
         return beanHelperClass;
     }
 
-    public void setBeanHelperClass(
-                                   Class<? extends BeanHelper> beanHelperClass)
+    public void setBeanHelperClass(Class<? extends CSBeanMapper> beanHelperClass)
     {
         this.beanHelperClass = beanHelperClass;
     }
 
-    public ClassLoader getBeanClassLoader()
-    {
-        return beanClassLoader;
-    }
-
-    public void setBeanClassLoader(
-                                   ClassLoader beanClassLoader)
+    public void setBeanClassLoader(ClassLoader beanClassLoader)
     {
         this.beanClassLoader = beanClassLoader;
     }
 
-    public MappingProfile getMappingProfile()
-    {
-        return mappingProfile;
-    }
-
-    public void setMappingProfile(
-                                  MappingProfile mappingProfile)
+    public void setMappingProfile(MappingProfile mappingProfile)
     {
         this.mappingProfile = mappingProfile;
     }
 
-    public List<Class<?>> getMappedClasses()
-    {
-        return mappedClasses;
-    }
-
-    public void setMappedClasses(
-                                 List<Class<?>> mappedClasses)
+    public void setMappedClasses(List<Class<?>> mappedClasses)
     {
         this.mappedClasses = mappedClasses;
     }
@@ -90,14 +71,20 @@ public class BeanHelperFactoryBean implements FactoryBean<BeanHelper>, Initializ
     public void afterPropertiesSet()
         throws Exception
     {
+        MappingConfig mappingConfig = createMappingConfig();
         try
         {
-            beanMapper = beanHelperClass.newInstance();
+            beanMapper = beanHelperClass.getConstructor(MappingConfig.class).newInstance(mappingConfig);
         }
         catch (Exception e)
         {
-            throw new RuntimeException("Failed to create [" + beanHelperClass + "] instance.", e);
+            throw new RuntimeException(
+                    String.format("Failed to create [%s] instance.", beanHelperClass.getName()), e);
         }
+    }
+
+    private MappingConfig createMappingConfig()
+    {
         MappingConfig mappingConfig = new MappingConfig();
         if (mappedClasses != null)
         {
@@ -121,10 +108,10 @@ public class BeanHelperFactoryBean implements FactoryBean<BeanHelper>, Initializ
         {
             mappingConfig.setMappingProfile(new DefaultMappingProfile());
         }
-        beanMapper.setMappingConfig(mappingConfig);
+        return mappingConfig;
     }
 
-    public BeanHelper getObject()
+    public CSBeanMapper getObject()
         throws Exception
     {
         return beanMapper;
@@ -132,7 +119,7 @@ public class BeanHelperFactoryBean implements FactoryBean<BeanHelper>, Initializ
 
     public Class<?> getObjectType()
     {
-        return BeanHelper.class;
+        return CSBeanMapper.class;
     }
 
     public boolean isSingleton()

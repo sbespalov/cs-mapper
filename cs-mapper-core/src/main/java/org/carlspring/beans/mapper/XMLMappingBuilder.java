@@ -17,17 +17,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * <pre class="code">
- * 	&ltbean id="beanHelper"
- *		class="ru.diasoft.fa.xdscall.beans.spring.BeanHelperFactoryBean"&gt
- *		&ltproperty name="mappingLocations"&gt
- *			&ltlist&gt
- *				&ltvalue&gtbeanMappings.xml&lt/value&gt
- *			&lt/list&gt
- *		&lt/property&gt
- *	&lt/bean&gt
- * </pre>
- *
  * @author Sergey Bespalov
  */
 public class XMLMappingBuilder implements MappingBuilder
@@ -88,21 +77,6 @@ public class XMLMappingBuilder implements MappingBuilder
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(true);
-        // SAXParser parser = null;
-        // try {
-        // factory.setFeature("http://apache.org/xml/features/validation/schema",
-        // true);
-        // factory.setFeature("http://apache.org/xml/features/validation/schema-full-checking",
-        // true);
-        //
-        // parser = factory.newSAXParser();
-        // parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
-        // getClass().getResource("/commons-serviceutils/src/main/resources/ru/diasoft/fa/gl/commons/serviceutils/beanmapper/bean-mappings.xsd")
-        // .toString());
-        // } catch (ParserConfigurationException e) {
-        // throw new SAXException(e);
-        // }
-        // digester = new Digester(parser);
         digester = new Digester();
         digester.setErrorHandler(new ErrorHandler()
         {

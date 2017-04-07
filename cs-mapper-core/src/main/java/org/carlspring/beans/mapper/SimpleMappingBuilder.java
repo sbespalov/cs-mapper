@@ -248,9 +248,9 @@ public class SimpleMappingBuilder implements MappingBuilder {
 											PropertyDescriptor propertyDescriptor) {
 		Class[] genericTypeArguments;
 		if (propertyDescriptor.getReadMethod() != null) {
-			genericTypeArguments = BeanUtils.extractGenericTypeArguments(propertyDescriptor.getReadMethod(), -1);
+			genericTypeArguments = CSBeanUtils.extractGenericTypeArguments(propertyDescriptor.getReadMethod(), -1);
 		} else {
-			genericTypeArguments = BeanUtils.extractGenericTypeArguments(propertyDescriptor.getWriteMethod(), 0);
+			genericTypeArguments = CSBeanUtils.extractGenericTypeArguments(propertyDescriptor.getWriteMethod(), 0);
 		}
 		Class collectionElementType = genericTypeArguments == null || genericTypeArguments.length == 0 ? Object.class
 				: genericTypeArguments[0];
@@ -267,7 +267,7 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		try {
 			for (String property : keySet) {
 				result.put(property, createBeanPropertyDescriptor(property,
-																		BeanUtils.findPropertyDescriptor(type,
+																		CSBeanUtils.findPropertyDescriptor(type,
 																											property)));
 			}
 		} catch (Exception e) {
@@ -283,7 +283,7 @@ public class SimpleMappingBuilder implements MappingBuilder {
 			return result;
 		}
 		try {
-			for (PropertyDescriptor propertyDescriptor : BeanUtils.getPropertyDescriptors(type)) {
+			for (PropertyDescriptor propertyDescriptor : CSBeanUtils.getPropertyDescriptors(type)) {
 					result.put(propertyDescriptor.getName(), createBeanPropertyDescriptor(propertyDescriptor.getName(),
 																								propertyDescriptor));
 			}

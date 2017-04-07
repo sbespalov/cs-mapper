@@ -6,58 +6,57 @@ import java.util.List;
 /**
  * @author Sergey Bespalov
  */
-public class BeanMapping {
+public class BeanMapping
+{
 
-	private Class sourceClass;
+    private Class sourceClass;
+    private Class targetClass;
+    private String mappingId;
+    private List<PropertyMapping> propertyMappings = new ArrayList<PropertyMapping>();
 
-	private Class targetClass;
+    public String getMappingId()
+    {
+        return mappingId;
+    }
 
-	private String mappingId;
+    public void setMappingId(String mappingId)
+    {
+        this.mappingId = mappingId;
+    }
 
-	private List<PropertyMapping> propertyMappings;
+    public Class getSourceClass()
+    {
+        return sourceClass;
+    }
 
-	public String getMappingId() {
-		return mappingId;
-	}
+    public void setSourceClass(Class sourceClass)
+    {
+        this.sourceClass = sourceClass;
+    }
 
-	public void setMappingId(
-								String mappingId) {
-		this.mappingId = mappingId;
-	}
+    public Class getTargetClass()
+    {
+        return targetClass;
+    }
 
-	public Class getSourceClass() {
-		return sourceClass;
-	}
+    public void setTargetClass(Class targetClass)
+    {
+        this.targetClass = targetClass;
+    }
 
-	public void setSourceClass(
-								Class sourceClass) {
-		this.sourceClass = sourceClass;
-	}
+    public List<PropertyMapping> getPropertyMappings()
+    {
+        return propertyMappings;
+    }
 
-	public Class getTargetClass() {
-		return targetClass;
-	}
+    public void setPropertyMappings(List<PropertyMapping> propertyMappings)
+    {
+        this.propertyMappings = propertyMappings;
+    }
 
-	public void setTargetClass(
-								Class targetClass) {
-		this.targetClass = targetClass;
-	}
-
-	public List<PropertyMapping> getPropertyMappings() {
-		return propertyMappings;
-	}
-
-	public void setPropertyMappings(
-									List<PropertyMapping> propertyMappings) {
-		this.propertyMappings = propertyMappings;
-	}
-
-	public void addPropertyMapping(
-									PropertyMapping mapping) {
-		if (propertyMappings == null) {
-			propertyMappings = new ArrayList<PropertyMapping>();
-		}
-		propertyMappings.add(mapping);
-	}
+    public void addPropertyMapping(PropertyMapping mapping)
+    {
+        propertyMappings.add(mapping);
+    }
 
 }

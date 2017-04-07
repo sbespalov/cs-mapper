@@ -4,7 +4,6 @@ public class PropertyMapping
 {
 
     private BeanPropertyDescriptor srcProperty;
-
     private BeanPropertyDescriptor targetProperty;
 
     public BeanPropertyDescriptor getSrcProperty()

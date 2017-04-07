@@ -27,10 +27,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
 
-public class BeanUtils
+public class CSBeanUtils
 {
 
-    private static Logger logger = Logger.getLogger(BeanUtils.class.getCanonicalName());
+    private static Logger logger = Logger.getLogger(CSBeanUtils.class.getCanonicalName());
 
     public static List wrapCollection(final Class targetClass,
                                       final Class decoratorClass,
@@ -40,14 +40,11 @@ public class BeanUtils
         {
             return new ArrayList();
         }
-        Class[] interfaces = new Class[] {
-                                           Transformer.class
-        };
+        Class[] interfaces = new Class[] { Transformer.class };
         InvocationHandler h = new InvocationHandler()
         {
 
-            public Object invoke(
-                                 Object proxy,
+            public Object invoke(Object proxy,
                                  Method method,
                                  Object[] args)
                 throws Throwable
@@ -80,19 +77,15 @@ public class BeanUtils
         return (List) CollectionUtils.collect(targetCollection, transformer);
     }
 
-    public static List unwrapCollection(
-                                        final Class targetClass,
+    public static List unwrapCollection(final Class targetClass,
                                         final Class decoratorClass,
                                         Collection decoratedCollection)
     {
-        Class[] interfaces = new Class[] {
-                                           Transformer.class
-        };
+        Class[] interfaces = new Class[] { Transformer.class };
         InvocationHandler h = new InvocationHandler()
         {
 
-            public Object invoke(
-                                 Object proxy,
+            public Object invoke(Object proxy,
                                  Method method,
                                  Object[] args)
                 throws Throwable
@@ -126,8 +119,7 @@ public class BeanUtils
         return (List) CollectionUtils.collect(decoratedCollection, transformer);
     }
 
-    public static PropertyDescriptor findPropertyDescriptor(
-                                                            Class<?> targetClass,
+    public static PropertyDescriptor findPropertyDescriptor(Class<?> targetClass,
                                                             String targetProperty)
         throws PropertyNotFoundException
     {
@@ -140,7 +132,7 @@ public class BeanUtils
             List<PropertyDescriptor> propertyDescriptors;
             try
             {
-                propertyDescriptors = BeanUtils.getPropertyDescriptors(nesteedClass);
+                propertyDescriptors = CSBeanUtils.getPropertyDescriptors(nesteedClass);
             }
             catch (IntrospectionException e)
             {
@@ -161,8 +153,7 @@ public class BeanUtils
         return result;
     }
 
-    public static String extractPopertyName(
-                                            Method method)
+    public static String extractPopertyName(Method method)
     {
         String methodName = method.getName();
         if (methodName.startsWith("is"))
@@ -180,22 +171,19 @@ public class BeanUtils
         return methodName;
     }
 
-    public static boolean isGetter(
-                                   Method method)
+    public static boolean isGetter(Method method)
     {
         String methodName = method.getName();
         return methodName.startsWith("is") || methodName.startsWith("get");
     }
 
-    public static boolean isSetter(
-                                   Method method)
+    public static boolean isSetter(Method method)
     {
         String methodName = method.getName();
         return methodName.startsWith("set");
     }
 
-    public static List<PropertyDescriptor> getPropertyDescriptors(
-                                                                  Class<?> parameterType)
+    public static List<PropertyDescriptor> getPropertyDescriptors(Class<?> parameterType)
         throws IntrospectionException
     {
         List<PropertyDescriptor> propertyDescriptors = new ArrayList<PropertyDescriptor>();
@@ -211,8 +199,7 @@ public class BeanUtils
         return propertyDescriptors;
     }
 
-    public static Object getProperty(
-                                     Object object,
+    public static Object getProperty(Object object,
                                      String propertyName)
         throws NoSuchMethodException
     {
@@ -246,8 +233,7 @@ public class BeanUtils
         }
     }
 
-    public static void setProperty(
-                                   Object object,
+    public static void setProperty(Object object,
                                    String propertyName,
                                    Object value)
     {
@@ -273,8 +259,7 @@ public class BeanUtils
         }
     }
 
-    public static <T> T createInstance(
-                                       Class<T> type)
+    public static <T> T createInstance(Class<T> type)
     {
         if (Collection.class.isAssignableFrom(type))
         {
@@ -290,8 +275,7 @@ public class BeanUtils
         }
     }
 
-    public static <T> T createBeanInstance(
-                                           Class<T> targetClass)
+    public static <T> T createBeanInstance(Class<T> targetClass)
     {
         if (Map.class.isAssignableFrom(targetClass))
         {
@@ -311,8 +295,7 @@ public class BeanUtils
         }
     }
 
-    public static <T> T createBeanProxyInstance(
-                                                Class<T> targetClass)
+    public static <T> T createBeanProxyInstance(Class<T> targetClass)
     {
         Class<T> beanProxyClass = (Class<T>) Proxy.getProxyClass(targetClass.getClassLoader(), targetClass);
         try
@@ -329,8 +312,7 @@ public class BeanUtils
         }
     }
 
-    public static <T> T createCollectionInstance(
-                                                 Class<T> collectionType)
+    public static <T> T createCollectionInstance(Class<T> collectionType)
     {
         if (Collection.class.isAssignableFrom(collectionType))
         {
@@ -364,8 +346,7 @@ public class BeanUtils
         throw new RuntimeException("Failed to instanciate collection of type-[" + collectionType + "].");
     }
 
-    public static <T> T createMapInstance(
-                                          Class<T> mapType)
+    public static <T> T createMapInstance(Class<T> mapType)
     {
         try
         {
@@ -384,8 +365,7 @@ public class BeanUtils
         }
     }
 
-    public static Class[] extractGenericTypeArguments(
-                                                      Method method,
+    public static Class[] extractGenericTypeArguments(Method method,
                                                       int i)
     {
         List<Class> result = new ArrayList<Class>();

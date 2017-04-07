@@ -1,49 +1,51 @@
 package org.carlspring.beans.mapper;
 
-public class BeanPropertyDescriptor {
+public class BeanPropertyDescriptor
+{
 
-	private boolean writable = true;
-	
-	private String propertyName;
+    private boolean writable = true;
+    private String propertyName;
+    private Class propertyType;
+    private Class[] typeArgs = new Class[] {};
 
-	private Class propertyType;
+    public boolean isWritable()
+    {
+        return writable;
+    }
 
-	private Class[] typeArgs = new Class[] {};
+    public void setWritable(boolean writable)
+    {
+        this.writable = writable;
+    }
 
-	public boolean isWritable() {
-		return writable;
-	}
+    public String getPropertyName()
+    {
+        return propertyName;
+    }
 
-	public void setWritable(
-							boolean writable) {
-		this.writable = writable;
-	}
+    public void setPropertyName(String propertyName)
+    {
+        this.propertyName = propertyName;
+    }
 
-	public String getPropertyName() {
-		return propertyName;
-	}
+    public Class getPropertyType()
+    {
+        return propertyType;
+    }
 
-	public void setPropertyName(
-								String propertyName) {
-		this.propertyName = propertyName;
-	}
+    public void setPropertyType(Class propertyType)
+    {
+        this.propertyType = propertyType;
+    }
 
-	public Class getPropertyType() {
-		return propertyType;
-	}
+    public Class[] getTypeArgs()
+    {
+        return typeArgs;
+    }
 
-	public void setPropertyType(
-								Class propertyType) {
-		this.propertyType = propertyType;
-	}
-
-	public Class[] getTypeArgs() {
-		return typeArgs;
-	}
-
-	public void setTypeArgs(
-							Class[] typeArgs) {
-		this.typeArgs = typeArgs;
-	}
+    public void setTypeArgs(Class[] typeArgs)
+    {
+        this.typeArgs = typeArgs;
+    }
 
 }
