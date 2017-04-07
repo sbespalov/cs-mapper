@@ -1,0 +1,11 @@
+package $packageName;
+
+public interface $summaryClassName {
+
+	public static final Class[] domainDtoClasses = {
+	#foreach( $domainDto in $domainDtoList)
+		${domainDto.className}.class,
+	#end
+	};
+
+}

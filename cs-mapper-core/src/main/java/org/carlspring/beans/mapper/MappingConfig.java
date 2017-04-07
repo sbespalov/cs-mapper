@@ -86,8 +86,7 @@ public class MappingConfig
         return mappingBuilder;
     }
 
-    public void registerMappings(
-                                 MappingBuilder mappingBuilder)
+    public void registerMappings(MappingBuilder mappingBuilder)
     {
         synchronized (mappings)
         {
@@ -101,15 +100,13 @@ public class MappingConfig
 
     }
 
-    private String createMappingKey(
-                                    BeanMapping beanMapping)
+    private String createMappingKey(BeanMapping beanMapping)
     {
         return createMappingKey(beanMapping.getSourceClass().getName(), beanMapping.getTargetClass().getName(),
                                 beanMapping.getMappingId());
     }
 
-    private String createMappingKey(
-                                    String sourceClass,
+    private String createMappingKey(String sourceClass,
                                     String targetClass,
                                     String mappingId)
     {
