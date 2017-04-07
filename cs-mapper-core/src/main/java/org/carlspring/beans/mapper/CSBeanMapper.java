@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.collections.iterators.ArrayIterator;
 
-@SuppressWarnings("unchecked")
 public class CSBeanMapper
 {
 
@@ -206,6 +205,8 @@ public class CSBeanMapper
             BeanMapping beanMapping = getMappingConfig().getBeanMapping(targetType, sourceType, mappingId);
             return beanMapping.getPropertyMappings();
         }
+
+        // We are forced to create mappings dynamically in case of `Map`
         List<PropertyMapping> propertyMappings = new ArrayList<PropertyMapping>();
         Map<String, Object> map = (Map<String, Object>) sourceObject;
         for (String key : map.keySet())

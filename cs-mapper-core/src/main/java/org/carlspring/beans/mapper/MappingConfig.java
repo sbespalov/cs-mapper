@@ -40,34 +40,50 @@ public class MappingConfig
     {
         String key = createMappingKey(sourceClass.getName(), targetClass.getName(), mappingId);
         BeanMapping result = mappings.get(key);
-        if (result == null)
+        if (result != null)
         {
-            key = createMappingKey(sourceClass.getName(), targetClass.getName(), null);
-            result = mappings.get(key);
+            return result;
         }
-        if (result == null
-                && (mappingProfile.isAllowDefaultMapping() || sourceClass.isAssignableFrom(targetClass) || targetClass
-                                                                                                                      .isAssignableFrom(sourceClass)))
+
+        key = createMappingKey(sourceClass.getName(), targetClass.getName(), null);
+        result = mappings.get(key);
+        if (result != null)
         {
-            synchronized (mappings)
+            return result;
+        }
+        if (!mappingProfile.isAllowDefaultMapping() && !sourceClass.isAssignableFrom(targetClass)
+                && !targetClass.isAssignableFrom(sourceClass))
+        {
+            throw new RuntimeException(
+                    String.format("Mapping [%s] to [%s] not allowed. You can avoid this with 'MappingProfile.isAllowDefaultMapping()'",
+                                  sourceClass, targetClass));
+        }
+
+        synchronized (mappings)
+        {
+            MappingBuilder mappingBuilder = createMappingBuilder(targetClass, sourceClass);
+
+            List<BeanMapping> beanMappings = mappingBuilder.buildMappings();
+            for (BeanMapping beanMapping : beanMappings)
             {
-                SimpleMappingBuilder mappingBuilder = targetClass.isAssignableFrom(sourceClass)
-                        ? new SimpleMappingBuilder(mappingProfile, targetClass, sourceClass)
-                        : new SimpleMappingBuilder(mappingProfile, sourceClass, targetClass);
-                List<BeanMapping> beanMappings = mappingBuilder.buildMappings();
-                for (BeanMapping beanMapping : beanMappings)
+                String keyLocal = createMappingKey(beanMapping);
+                mappings.put(keyLocal, beanMapping);
+                if (key.equals(keyLocal))
                 {
-                    String localKey = createMappingKey(beanMapping);
-                    mappings.put(localKey, beanMapping);
+                    result = beanMapping;
                 }
-                result = mappings.get(key);
             }
         }
-        if (result == null)
-        {
-            throw new RuntimeException("Mapping [" + sourceClass + "] to [" + targetClass + "] not found.");
-        }
         return result;
+    }
+
+    protected MappingBuilder createMappingBuilder(Class targetClass,
+                                                  Class sourceClass)
+    {
+        AnnotationMappingBuilder mappingBuilder = targetClass.isAssignableFrom(sourceClass)
+                ? new AnnotationMappingBuilder(mappingProfile, targetClass, sourceClass)
+                : new AnnotationMappingBuilder(mappingProfile, sourceClass, targetClass);
+        return mappingBuilder;
     }
 
     public void registerMappings(
