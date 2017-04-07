@@ -32,15 +32,16 @@
 		<tag>cs-mapper-1.0</tag>
 	</scm>
 	<distributionManagement>
-		<repository>
-			<id>sonatype-staging</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-		</repository>
 		<snapshotRepository>
-			<id>sonatype-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>cs-local-repo</id>
+			<url>file://${basedir}/../cs-local-repo</url>
 		</snapshotRepository>
+		<repository>
+			<id>cs-local-repo</id>
+			<url>file://${basedir}/../cs-local-repo</url>
+		</repository>
 	</distributionManagement>
+
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
