@@ -172,7 +172,7 @@ public class DomainDtoDoclet {
 					
 					continue;
 				}
-				if (methodDoc.tags("ru.inwion.generic.utils.doclet.DomainDtoDoclet.skipProperty").length > 0){
+				if (methodDoc.tags("org.carlspring.beans.utils.doclet.DomainDtoDoclet.skipProperty").length > 0){
 					beanProperties.put(propertyName, null);
 					continue outer_loop;
 				}
@@ -192,7 +192,7 @@ public class DomainDtoDoclet {
 					}
 				}
 				AnnotationDescriptor annotation = new AnnotationDescriptor();
-				annotation.setClassName("ru.inwion.generic.beans.markup.MappedProperty");
+				annotation.setClassName("org.carlspring.beans.mapper.markup.CSProperty");
 				annotation.getAttributes().put("targetProperty", Arrays.asList(new String[]{"\"" + propertyName + "\""}));
 				beanProperty.getAnnotations().add(annotation);
 				Tag[] tags = methodDoc.tags();
@@ -229,8 +229,8 @@ public class DomainDtoDoclet {
 			beanDescriptor.setClassName(DTO_PREFIX + entityName + DTO_SUFFIX);
 			beanDescriptor.setPackageName(basePackage);
 			AnnotationDescriptor annotation = new AnnotationDescriptor();
-			annotation.setClassName("ru.inwion.generic.beans.markup.MappedBean");
-			annotation.getAttributes().put("targetBean", Arrays.asList(new String[]{classDoc.qualifiedName() + ".class"}));
+			annotation.setClassName("org.carlspring.beans.mapper.markup.CSMappedBean");
+			annotation.getAttributes().put("value", Arrays.asList(new String[]{classDoc.qualifiedName() + ".class"}));
 			beanDescriptor.getAnnotations().add(annotation);
 			for (BeanProperty beanProperty : beanProperties.values()) {
 				if (beanProperty != null) {

@@ -15,6 +15,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>cs-mapper-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 		</dependency>
@@ -22,5 +27,5 @@
 			<groupId>sun</groupId>
 			<artifactId>tools</artifactId>
 		</dependency>
-    </dependencies>
+	</dependencies>
 </project>

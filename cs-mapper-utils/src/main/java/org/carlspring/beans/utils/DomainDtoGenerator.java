@@ -16,7 +16,7 @@ public class DomainDtoGenerator
 
     private VelocityEngine velocityEngine;
     private String templateName = "org/carlspring/beans/utils/vm/domainDto.vm";
-    private String summaryTemplateName = "/org/carlspring/beans/utils/vm/domainSummary.vm";
+    private String summaryTemplateName = "org/carlspring/beans/utils/vm/domainSummary.vm";
     private String output = ".";
 
     public DomainDtoGenerator()
@@ -33,7 +33,7 @@ public class DomainDtoGenerator
             {
                 properties = new Properties();
                 properties.load(getClass().getClassLoader()
-                                          .getResourceAsStream("ru/inwion/generic/utils/vm/velocity.properties"));
+                                          .getResourceAsStream("org/carlspring/beans/utils/vm/velocity.properties"));
             }
             velocityEngine.init(properties);
         }

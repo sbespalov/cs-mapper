@@ -34,6 +34,7 @@
 		<module>cs-mapper-parent</module>
 		<module>cs-mapper-core</module>
 		<module>cs-mapper-utils</module>
+		<module>cs-mapper-examples</module>
 	</modules>
 
 </project>
