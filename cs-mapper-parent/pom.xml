@@ -34,11 +34,11 @@
 	<distributionManagement>
 		<snapshotRepository>
 			<id>cs-local-repo</id>
-			<url>file://${basedir}/../cs-local-repo</url>
+			<url>file://${basedir}/../../cs-mapper-repo</url>
 		</snapshotRepository>
 		<repository>
 			<id>cs-local-repo</id>
-			<url>file://${basedir}/../cs-local-repo</url>
+			<url>file://${basedir}/../../cs-mapperl-repo</url>
 		</repository>
 	</distributionManagement>
 
