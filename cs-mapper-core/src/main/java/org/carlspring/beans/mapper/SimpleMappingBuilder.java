@@ -16,7 +16,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class SimpleMappingBuilder implements MappingBuilder {
 
 	private static Logger logger = Logger.getLogger(SimpleMappingBuilder.class.getCanonicalName());
-	
+
 	private String mappingId;
 	private Class<?> targetClass;
 	private Class<?> sourceClass;
@@ -44,8 +44,7 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return targetClass;
 	}
 
-	public void setTargetClass(
-								Class<?> targetClass) {
+	public void setTargetClass(Class<?> targetClass) {
 		this.targetClass = targetClass;
 	}
 
@@ -53,8 +52,7 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return sourceClass;
 	}
 
-	public void setSourceClass(
-								Class<?> sourceClass) {
+	public void setSourceClass(Class<?> sourceClass) {
 		this.sourceClass = sourceClass;
 	}
 
@@ -62,8 +60,7 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return reverceMapping;
 	}
 
-	public void setReverceMapping(
-									boolean reverceMapping) {
+	public void setReverceMapping(boolean reverceMapping) {
 		this.reverceMapping = reverceMapping;
 	}
 
@@ -71,31 +68,27 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return mappingId;
 	}
 
-	public void setMappingId(
-								String mappingId) {
+	public void setMappingId(String mappingId) {
 		this.mappingId = mappingId;
 	}
 
-	public void addExcludeProperty(
-									String propertyName) {
+	public void addExcludeProperty(String propertyName) {
 		excludeProperties.add(propertyName);
 	}
 
-	public void addCustomMapping(
-									String sourceProperty,
-									String targetProperty) {
+	public void addCustomMapping(String sourceProperty, String targetProperty) {
 		sourceCustomMappings.put(sourceProperty, targetProperty);
 		targetCustomMappings.put(targetProperty, sourceProperty);
 	}
-	
-	public void addSourceCustomType(String propertyName, Class type){
+
+	public void addSourceCustomType(String propertyName, Class type) {
 		sourceCustomTypes.put(propertyName, type);
 	}
 
-	public void addTargetCustomType(String propertyName, Class type){
+	public void addTargetCustomType(String propertyName, Class type) {
 		targetCustomTypes.put(propertyName, type);
 	}
-	
+
 	public List<BeanMapping> buildMappings() {
 		List<BeanMapping> result = new ArrayList<BeanMapping>();
 		BeanMapping beanMapping = new BeanMapping();
@@ -105,14 +98,16 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		beanMapping.setMappingId(getMappingId());
 		Map<String, BeanPropertyDescriptor> sourceProperties = getProperties(getSourceClass());
 		Map<String, BeanPropertyDescriptor> targetProperties = getProperties(getTargetClass());
-		if (mappingProfile.isAllowDefaultMapping()){
+		if (mappingProfile.isAllowDefaultMapping()) {
 			if (!Map.class.isAssignableFrom(targetClass)) {
-				for (Object propertyName : CollectionUtils.subtract(sourceProperties.keySet(), targetProperties.keySet())) {
+				for (Object propertyName : CollectionUtils.subtract(sourceProperties.keySet(),
+						targetProperties.keySet())) {
 					sourceProperties.remove(propertyName);
 				}
 			}
 			if (!Map.class.isAssignableFrom(sourceClass)) {
-				for (Object propertyName : CollectionUtils.subtract(targetProperties.keySet(), sourceProperties.keySet())) {
+				for (Object propertyName : CollectionUtils.subtract(targetProperties.keySet(),
+						sourceProperties.keySet())) {
 					targetProperties.remove(propertyName);
 				}
 			}
@@ -124,12 +119,12 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		for (PropertyMapping propertyMapping : propertyMappings) {
 			BeanPropertyDescriptor srcProperty = propertyMapping.getSrcProperty();
 			BeanPropertyDescriptor targetProperty = propertyMapping.getTargetProperty();
-			if (sourceCustomTypes.containsKey(srcProperty.getPropertyName())){
+			if (sourceCustomTypes.containsKey(srcProperty.getPropertyName())) {
 				srcProperty.setPropertyType(sourceCustomTypes.get(srcProperty.getPropertyName()));
 			}
-			if (targetCustomTypes.containsKey(targetProperty.getPropertyName())){
+			if (targetCustomTypes.containsKey(targetProperty.getPropertyName())) {
 				targetProperty.setPropertyType(targetCustomTypes.get(targetProperty.getPropertyName()));
-			}			
+			}
 		}
 		if (reverceMapping) {
 			result.add(buildReverceMapping(beanMapping));
@@ -137,9 +132,8 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return result;
 	}
 
-	private List<PropertyMapping> createPropertyMappings(
-													Map<String, BeanPropertyDescriptor> sourceProperties,
-													Map<String, BeanPropertyDescriptor> targetProperties) {
+	private List<PropertyMapping> createPropertyMappings(Map<String, BeanPropertyDescriptor> sourceProperties,
+			Map<String, BeanPropertyDescriptor> targetProperties) {
 		List<PropertyMapping> result = new ArrayList<PropertyMapping>();
 		if (!Map.class.isAssignableFrom(sourceClass) && !Map.class.isAssignableFrom(targetClass)) {
 			for (String sourcePropertyName : sourceProperties.keySet()) {
@@ -149,7 +143,7 @@ public class SimpleMappingBuilder implements MappingBuilder {
 				String targetPropertyName = sourcePropertyName;
 				if (sourceCustomMappings.containsKey(sourcePropertyName)) {
 					targetPropertyName = sourceCustomMappings.get(sourcePropertyName);
-				} else if (!targetProperties.containsKey(sourcePropertyName)){
+				} else if (!targetProperties.containsKey(sourcePropertyName)) {
 					throw new RuntimeException("Failed to create class mapping [" + sourceClass + "]-[" + targetClass
 							+ "]. Property [" + sourcePropertyName + "] not found for class [" + targetClass + "]");
 				}
@@ -171,7 +165,7 @@ public class SimpleMappingBuilder implements MappingBuilder {
 				BeanPropertyDescriptor targetPropertyDescriptor = targetProperties.get(targetPropertyName);
 				propertyMapping.setTargetProperty(targetPropertyDescriptor);
 				BeanPropertyDescriptor sourcePropertyDescriptor = createMapPropertyDescriptor(sourcePropertyName,
-																								targetPropertyDescriptor);
+						targetPropertyDescriptor);
 				propertyMapping.setSrcProperty(sourcePropertyDescriptor);
 				result.add(propertyMapping);
 			}
@@ -188,7 +182,7 @@ public class SimpleMappingBuilder implements MappingBuilder {
 				BeanPropertyDescriptor sourcePropertyDescriptor = sourceProperties.get(sourcePropertyName);
 				propertyMapping.setSrcProperty(sourcePropertyDescriptor);
 				BeanPropertyDescriptor targetPropertyDescriptor = createMapPropertyDescriptor(targetPropertyName,
-																								sourcePropertyDescriptor);
+						sourcePropertyDescriptor);
 				propertyMapping.setTargetProperty(targetPropertyDescriptor);
 				result.add(propertyMapping);
 			}
@@ -196,22 +190,17 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return result;
 	}
 
-	private BeanPropertyDescriptor createMapPropertyDescriptor(
-																String propertyName,
-																BeanPropertyDescriptor propertyDescriptor) {
+	private BeanPropertyDescriptor createMapPropertyDescriptor(String propertyName,
+			BeanPropertyDescriptor propertyDescriptor) {
 		BeanPropertyDescriptor result = new BeanPropertyDescriptor();
 		result.setPropertyName(propertyName);
 		if (Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
 			result.setPropertyType(propertyDescriptor.getPropertyType());
 			Class listElementType = propertyDescriptor.getTypeArgs()[0];
 			if (!isConvertableToMap(listElementType)) {
-				result.setTypeArgs(new Class[] {
-					listElementType
-				});
+				result.setTypeArgs(new Class[] { listElementType });
 			} else {
-				result.setTypeArgs(new Class[] {
-					Map.class
-				});
+				result.setTypeArgs(new Class[] { Map.class });
 			}
 		} else {
 			if (!isConvertableToMap(propertyDescriptor.getPropertyType())) {
@@ -223,29 +212,27 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return result;
 	}
 
-	private BeanPropertyDescriptor createBeanPropertyDescriptor(
-																	String propertyName,
-																	PropertyDescriptor propertyDescriptor) {
+	private BeanPropertyDescriptor createBeanPropertyDescriptor(String propertyName,
+			PropertyDescriptor propertyDescriptor) {
 		try {
 			BeanPropertyDescriptor result = new BeanPropertyDescriptor();
 			result.setPropertyName(propertyName);
 			result.setWritable(propertyDescriptor.getWriteMethod() != null);
 			result.setPropertyType(propertyDescriptor.getPropertyType());
-			if (!propertyDescriptor.getPropertyType().isPrimitive() && Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
+			if (!propertyDescriptor.getPropertyType().isPrimitive()
+					&& Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
 				Class collectionElementType = getCollectionElementType(propertyDescriptor);
-				result.setTypeArgs(new Class[] {
-					collectionElementType
-				});
+				result.setTypeArgs(new Class[] { collectionElementType });
 			}
 			return result;
 		} catch (RuntimeException e) {
-			logger.log(Level.SEVERE, "Failed to create BeanPropertyDescriptor for property [" + propertyName + "] of type [" + String.valueOf(propertyDescriptor.getPropertyType()) + "].", e);
+			logger.log(Level.SEVERE, "Failed to create BeanPropertyDescriptor for property [" + propertyName
+					+ "] of type [" + String.valueOf(propertyDescriptor.getPropertyType()) + "].", e);
 			throw e;
 		}
 	}
 
-	private Class getCollectionElementType(
-											PropertyDescriptor propertyDescriptor) {
+	private Class getCollectionElementType(PropertyDescriptor propertyDescriptor) {
 		Class[] genericTypeArguments;
 		if (propertyDescriptor.getReadMethod() != null) {
 			genericTypeArguments = CSBeanUtils.extractGenericTypeArguments(propertyDescriptor.getReadMethod(), -1);
@@ -257,18 +244,15 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return collectionElementType;
 	}
 
-	private Map<String, BeanPropertyDescriptor> getCustomProperties(
-																	Class type,
-																	Set<String> keySet) {
+	private Map<String, BeanPropertyDescriptor> getCustomProperties(Class type, Set<String> keySet) {
 		Map<String, BeanPropertyDescriptor> result = new HashMap<String, BeanPropertyDescriptor>();
 		if (Map.class.isAssignableFrom(type)) {
 			return result;
 		}
 		try {
 			for (String property : keySet) {
-				result.put(property, createBeanPropertyDescriptor(property,
-																		CSBeanUtils.findPropertyDescriptor(type,
-																											property)));
+				result.put(property,
+						createBeanPropertyDescriptor(property, CSBeanUtils.findPropertyDescriptor(type, property)));
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to get properties descriptors for class - [" + type + "]", e);
@@ -276,30 +260,27 @@ public class SimpleMappingBuilder implements MappingBuilder {
 		return result;
 	}
 
-	private Map<String, BeanPropertyDescriptor> getProperties(
-																Class type) {
+	private Map<String, BeanPropertyDescriptor> getProperties(Class type) {
 		Map<String, BeanPropertyDescriptor> result = new HashMap<String, BeanPropertyDescriptor>();
 		if (Map.class.isAssignableFrom(type)) {
 			return result;
 		}
 		try {
 			for (PropertyDescriptor propertyDescriptor : CSBeanUtils.getPropertyDescriptors(type)) {
-					result.put(propertyDescriptor.getName(), createBeanPropertyDescriptor(propertyDescriptor.getName(),
-																								propertyDescriptor));
+				result.put(propertyDescriptor.getName(),
+						createBeanPropertyDescriptor(propertyDescriptor.getName(), propertyDescriptor));
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to get properties descriptors for class - [" + type + "]", e);
 		}
 		return result;
 	}
-	
-	private boolean isConvertableToMap(
-								Class type) {
+
+	private boolean isConvertableToMap(Class type) {
 		return !mappingProfile.isSimpleType(type);
 	}
 
-	private BeanMapping buildReverceMapping(
-											BeanMapping beanMapping) {
+	private BeanMapping buildReverceMapping(BeanMapping beanMapping) {
 		BeanMapping reverveMapping = new BeanMapping();
 		List<PropertyMapping> reverceMappings = new ArrayList<PropertyMapping>();
 		reverveMapping.setPropertyMappings(reverceMappings);

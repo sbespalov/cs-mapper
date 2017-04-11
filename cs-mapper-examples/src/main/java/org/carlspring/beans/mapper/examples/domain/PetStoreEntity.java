@@ -1,5 +1,6 @@
 package org.carlspring.beans.mapper.examples.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -10,7 +11,7 @@ public class PetStoreEntity extends CommonEntity
 {
 
     private String name;
-    private Set<PetEntity> petSet;
+    private Set<PetEntity> petSet = new HashSet<PetEntity>();
 
     public String getName()
     {
@@ -22,7 +23,7 @@ public class PetStoreEntity extends CommonEntity
         this.name = name;
     }
 
-    @OneToMany
+    @OneToMany(mappedBy="petStore")
     public Set<PetEntity> getPetSet()
     {
         return petSet;

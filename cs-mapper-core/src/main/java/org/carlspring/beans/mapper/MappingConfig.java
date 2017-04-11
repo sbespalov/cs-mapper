@@ -80,10 +80,7 @@ public class MappingConfig
     protected MappingBuilder createMappingBuilder(Class targetClass,
                                                   Class sourceClass)
     {
-        AnnotationMappingBuilder mappingBuilder = targetClass.isAssignableFrom(sourceClass)
-                ? new AnnotationMappingBuilder(mappingProfile, targetClass, sourceClass)
-                : new AnnotationMappingBuilder(mappingProfile, sourceClass, targetClass);
-        return mappingBuilder;
+        return new AnnotationMappingBuilder(mappingProfile, targetClass, sourceClass);
     }
 
     public void registerMappings(MappingBuilder mappingBuilder)
