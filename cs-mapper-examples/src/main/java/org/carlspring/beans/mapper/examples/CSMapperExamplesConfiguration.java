@@ -6,7 +6,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.carlspring.beans.mapper.DefaultMappingProfile;
 import org.carlspring.beans.mapper.converter.LongConverter;
-import org.carlspring.beans.mapper.spring.BeanHelperFactoryBean;
+import org.carlspring.beans.mapper.spring.CSBeanMapperFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -33,11 +33,11 @@ public class CSMapperExamplesConfiguration {
 	}
 
 	@Bean
-	public BeanHelperFactoryBean beanMapper() {
+	public CSBeanMapperFactoryBean beanMapper() {
 		DefaultMappingProfile mappingProfile = new DefaultMappingProfile();
 		mappingProfile.registerConverter(Long.class, new LongConverter());
 
-		BeanHelperFactoryBean result = new BeanHelperFactoryBean();
+		CSBeanMapperFactoryBean result = new CSBeanMapperFactoryBean();
 		result.setMappingProfile(mappingProfile);
 
 		return result;

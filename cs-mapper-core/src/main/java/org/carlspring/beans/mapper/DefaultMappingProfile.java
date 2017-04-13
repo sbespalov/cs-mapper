@@ -7,6 +7,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.converters.BigDecimalConverter;
@@ -27,9 +31,22 @@ import org.apache.commons.beanutils.converters.StringConverter;
 public class DefaultMappingProfile implements MappingProfile
 {
 
-    private Map<Class, Converter> converters = new HashMap<Class, Converter>();
+    private static final Logger LOGGER = Logger.getLogger(DefaultMappingProfile.class.getName());
 
+    private Map<Class, Converter> converters = new HashMap<Class, Converter>();
     private boolean allowDefaultMapping = true;
+    private EntityManagerFactory entityManagerFactory;
+
+    public DefaultMappingProfile()
+    {
+        super();
+    }
+
+    public DefaultMappingProfile(EntityManagerFactory entityManagerFactory)
+    {
+        super();
+        this.entityManagerFactory = entityManagerFactory;
+    }
 
     public boolean isSimpleType(Class type)
     {
@@ -61,7 +78,13 @@ public class DefaultMappingProfile implements MappingProfile
     public void registerConverter(Class type,
                                   Converter converter)
     {
-        converters.put(type, converter);
+        Converter mappedConverter = converters.get(type);
+        if (mappedConverter == null || mappedConverter.getClass() != converter.getClass())
+        {
+            converters.put(type, converter);
+            LOGGER.log(Level.INFO,
+                       String.format("Converter registered: class-[%s]; converter-[%s];", type, converter));
+        }
     }
 
     public void registerDefault()
@@ -104,6 +127,26 @@ public class DefaultMappingProfile implements MappingProfile
         registerConverter(Long.TYPE, throwException ? new LongConverter() : new LongConverter(0));
         registerConverter(Short.TYPE, throwException ? new ShortConverter() : new ShortConverter(0));
 
+    }
+
+    public Map<Class, Converter> getConverters()
+    {
+        return converters;
+    }
+
+    public void setConverters(Map<Class, Converter> converters)
+    {
+        this.converters = converters;
+    }
+
+    public EntityManagerFactory getEntityManagerFactory()
+    {
+        return entityManagerFactory;
+    }
+
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory)
+    {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
 }

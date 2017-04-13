@@ -3,14 +3,17 @@ package org.carlspring.beans.mapper;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
 public class MappingConfig
 {
 
-    private MappingProfile mappingProfile = new DefaultMappingProfile();
+    private static final Logger LOGGER = Logger.getLogger(MappingConfig.class.getName());
 
+    private MappingProfile mappingProfile = new DefaultMappingProfile();
     private Map<String, BeanMapping> mappings = new ConcurrentHashMap<String, BeanMapping>();
 
     public MappingConfig()
@@ -54,10 +57,13 @@ public class MappingConfig
         if (!mappingProfile.isAllowDefaultMapping() && !sourceClass.isAssignableFrom(targetClass)
                 && !targetClass.isAssignableFrom(sourceClass))
         {
-            throw new RuntimeException(
-                    String.format("Mapping [%s] to [%s] not allowed. You can avoid this with 'MappingProfile.isAllowDefaultMapping()'",
-                                  sourceClass, targetClass));
+            throw new RuntimeException(String.format(
+                                                     "Mapping [%s] to [%s] not allowed. You can avoid this with 'MappingProfile.isAllowDefaultMapping()'",
+                                                     sourceClass, targetClass));
         }
+
+        LOGGER.log(Level.INFO, String.format("Mapping not found, create: source-[%s]; target-[%s]",
+                                             sourceClass.getName(), targetClass.getName()));
 
         synchronized (mappings)
         {

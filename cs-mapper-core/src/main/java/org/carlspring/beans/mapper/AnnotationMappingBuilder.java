@@ -7,8 +7,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.carlspring.beans.mapper.markup.CSExclude;
@@ -21,96 +22,165 @@ import com.google.common.base.Predicate;
 /**
  * @author Sergey Bespalov
  */
-public class AnnotationMappingBuilder implements MappingBuilder {
+public class AnnotationMappingBuilder implements MappingBuilder
+{
 
-	private List<MappingBuilder> mappingBuilders = new ArrayList<MappingBuilder>();
+    private static final Logger LOGGER = Logger.getLogger(AnnotationMappingBuilder.class.getName());
 
-	private static Class[] getTarget(Class source) {
-		Set<Class> result = new HashSet<Class>();
-		for (Annotation annotation : ReflectionUtils.getAllAnnotations(source, new MappedBeanPredicate())) {
-			for (Class target : ((CSMappedBean) annotation).value()) {
-				result.add(target);
-			}
-		}
-		return result.toArray(new Class[] {});
-	}
+    private Class<?> sourceClass;
+    private Class<?> targetClass;
+    private MappingProfile mappingProfile;
 
-	public AnnotationMappingBuilder(MappingProfile mappingProfile, Class source) {
-		this(mappingProfile, source, getTarget(source));
-	}
+    private static Set<Class<?>> getTargetSet(Class source)
+    {
+        Set<Class<?>> result = new HashSet<Class<?>>();
+        for (Annotation annotation : ReflectionUtils.getAllAnnotations(source, new MappedBeanPredicate()))
+        {
+            for (Class target : ((CSMappedBean) annotation).value())
+            {
+                result.add(target);
+            }
+        }
+        return result;
+    }
 
-	public AnnotationMappingBuilder(MappingProfile mappingProfile, Class source, Class... target) {
-		if (target == null || target.length == 0) {
-			target = new Class[] { source };
-		}
+    public AnnotationMappingBuilder(MappingProfile mappingProfile,
+                                    Class sourceClass)
+    {
+        this(mappingProfile, sourceClass, null);
+    }
 
-		List<PropertyDescriptor> propertyDescriptors;
-		try {
-			propertyDescriptors = CSBeanUtils.getPropertyDescriptors(source);
-		} catch (IntrospectionException e) {
-			throw new RuntimeException(e);
-		}
+    public AnnotationMappingBuilder(MappingProfile mappingProfile,
+                                    Class sourceClass,
+                                    Class targetClass)
+    {
+        this.mappingProfile = mappingProfile;
+        this.sourceClass = sourceClass;
+        this.targetClass = targetClass;
+    }
 
-		for (Class targetBean : target) {
-			SimpleMappingBuilder mappingBuilder = new SimpleMappingBuilder(mappingProfile, source, targetBean);
+    public List<MappingBuilder> getMappingBuilderList()
+    {
+        LOGGER.log(Level.INFO,
+                   String.format("Init mappings: source-[%s]; target-[%s];", sourceClass, targetClass));
 
-			for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-				Method propertyMethod = propertyDescriptor.getReadMethod();
-				propertyMethod = propertyMethod == null ? propertyDescriptor.getWriteMethod() : propertyMethod;
-				if (getAnnotation(source, propertyMethod, CSExclude.class).size() > 0) {
-					mappingBuilder.addExcludeProperty(propertyDescriptor.getName());
-				}
-				for (CSProperty csProperty : getAnnotation(source, propertyMethod, CSProperty.class)) {
-					String targetProperty = csProperty.targetProperty();
-					Class<?> targetType = csProperty.targetType();
-					if (!StringUtils.isEmpty(targetProperty)) {
-						mappingBuilder.addCustomMapping(propertyDescriptor.getName(), targetProperty);
-					}
-					if (targetType != null && !Object.class.equals(targetType)) {
-						mappingBuilder.addTargetCustomType(propertyDescriptor.getName(), targetType);
-					}
-				}
-			}
-			mappingBuilders.add(mappingBuilder);
-		}
-	}
+        Set<Class<?>> targetList = getTargetSet(sourceClass);
+        if (targetClass != null)
+        {
+            targetList.add(targetClass);
+        }
+        else if (targetList.isEmpty())
+        {
+            targetList.add(sourceClass);
+        }
 
-	private <T extends Annotation> Set<T> getAnnotation(Class type, Method method, final Class<T> annotationClass) {
-		Set<T> result = new HashSet<T>();
-		for (Method m : ReflectionUtils.getAllMethods(type, new AnnotatedMethodPredicate(method, annotationClass))) {
-			result.add(m.getAnnotation(annotationClass));
-		}
-		return result;
-	}
+        List<PropertyDescriptor> propertyDescriptors;
+        try
+        {
+            propertyDescriptors = CSBeanUtils.getPropertyDescriptors(sourceClass);
+        }
+        catch (IntrospectionException e)
+        {
+            throw new RuntimeException(e);
+        }
 
-	public List<BeanMapping> buildMappings() {
-		List<BeanMapping> result = new ArrayList<BeanMapping>();
-		for (MappingBuilder mappingBuilder : mappingBuilders) {
-			result.addAll(mappingBuilder.buildMappings());
-		}
-		return result;
-	}
+        List<MappingBuilder> mappingBuilders = new ArrayList<MappingBuilder>();
 
-	private static class MappedBeanPredicate implements Predicate<Annotation> {
-		public boolean apply(Annotation input) {
-			return input instanceof CSMappedBean;
-		}
-	}
+        for (Class target : targetList)
+        {
+            LOGGER.log(Level.FINE, String.format("Build mapping: source-[%s]; target-[%s];", sourceClass, target));
 
-	private static class AnnotatedMethodPredicate implements Predicate<Method> {
+            SimpleMappingBuilder mappingBuilder = new SimpleMappingBuilder(mappingProfile, sourceClass, target);
 
-		private Class<? extends Annotation> annotationClass;
-		private Method method;
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors)
+            {
+                Method propertyMethod = propertyDescriptor.getReadMethod();
+                propertyMethod = propertyMethod == null ? propertyDescriptor.getWriteMethod() : propertyMethod;
+                if (getAnnotation(sourceClass, propertyMethod, CSExclude.class).size() > 0)
+                {
+                    LOGGER.log(Level.FINE, String.format("Exclude property mapping: source-[%s.%s]; target-[%s]; ",
+                                                         sourceClass.getSimpleName(), propertyDescriptor.getName(),
+                                                         target.getSimpleName()));
 
-		public AnnotatedMethodPredicate(Method method, Class<? extends Annotation> annotationClass) {
-			super();
-			this.method = method;
-			this.annotationClass = annotationClass;
-		}
+                    mappingBuilder.addExcludeProperty(propertyDescriptor.getName());
+                }
+                for (CSProperty csProperty : getAnnotation(sourceClass, propertyMethod, CSProperty.class))
+                {
+                    String targetProperty = csProperty.targetProperty();
+                    Class<?> targetType = csProperty.targetType();
+                    if (!StringUtils.isEmpty(targetProperty))
+                    {
+                        LOGGER.log(Level.FINE,
+                                   String.format("Custom property mapping: source-[%s.%s]; target-[%s.%s];",
+                                                 sourceClass.getSimpleName(), propertyDescriptor.getName(),
+                                                 target.getSimpleName(),
+                                                 targetProperty));
+                        mappingBuilder.addCustomMapping(propertyDescriptor.getName(), targetProperty);
+                    }
+                    if (targetType != null && !Object.class.equals(targetType))
+                    {
+                        LOGGER.log(Level.FINE,
+                                   String.format("Custom property type: source-[%s.%s]; target-[%s.%s]; type-[%s]",
+                                                 sourceClass.getSimpleName(), propertyDescriptor.getName(),
+                                                 target.getSimpleName(),
+                                                 targetProperty, targetType.getSimpleName()));
+                        mappingBuilder.addTargetCustomType(propertyDescriptor.getName(), targetType);
+                    }
+                }
+            }
+            mappingBuilders.add(mappingBuilder);
+        }
+        return mappingBuilders;
+    }
 
-		public boolean apply(Method input) {
-			return method.getName().equals(input.getName()) && input.isAnnotationPresent(annotationClass);
-		}
+    private <T extends Annotation> Set<T> getAnnotation(Class type,
+                                                        Method method,
+                                                        final Class<T> annotationClass)
+    {
+        Set<T> result = new HashSet<T>();
+        for (Method m : ReflectionUtils.getAllMethods(type, new AnnotatedMethodPredicate(method, annotationClass)))
+        {
+            result.add(m.getAnnotation(annotationClass));
+        }
+        return result;
+    }
 
-	}
+    public List<BeanMapping> buildMappings()
+    {
+        List<BeanMapping> result = new ArrayList<BeanMapping>();
+        for (MappingBuilder mappingBuilder : getMappingBuilderList())
+        {
+            result.addAll(mappingBuilder.buildMappings());
+        }
+        return result;
+    }
+
+    private static class MappedBeanPredicate implements Predicate<Annotation>
+    {
+        public boolean apply(Annotation input)
+        {
+            return input instanceof CSMappedBean;
+        }
+    }
+
+    private static class AnnotatedMethodPredicate implements Predicate<Method>
+    {
+
+        private Class<? extends Annotation> annotationClass;
+        private Method method;
+
+        public AnnotatedMethodPredicate(Method method,
+                                        Class<? extends Annotation> annotationClass)
+        {
+            super();
+            this.method = method;
+            this.annotationClass = annotationClass;
+        }
+
+        public boolean apply(Method input)
+        {
+            return method.getName().equals(input.getName()) && input.isAnnotationPresent(annotationClass);
+        }
+
+    }
 }
