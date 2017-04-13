@@ -17,19 +17,25 @@ import java.util.logging.Logger;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.collections.iterators.ArrayIterator;
 
-public class CSBeanMapper
+/**
+ * BeanMapper provide functionality for merge POJO objects of different classes, based on specific mappings.
+ * 
+ * @author Sergey Bespalov
+ *
+ */
+public class BeanMapper
 {
 
-    private static final Logger logger = Logger.getLogger(CSBeanMapper.class.getCanonicalName());
+    private static final Logger LOGGER = Logger.getLogger(BeanMapper.class.getCanonicalName());
 
     private MappingConfig mappingConfig;
 
-    public CSBeanMapper()
+    public BeanMapper()
     {
         this(new MappingConfig());
     }
 
-    public CSBeanMapper(MappingConfig mappingConfig)
+    public BeanMapper(MappingConfig mappingConfig)
     {
         super();
         this.mappingConfig = mappingConfig;
@@ -49,53 +55,6 @@ public class CSBeanMapper
             result = mergeBeans(result, object);
         }
         return result;
-    }
-
-    private Object mergeObjects(Object targetObject,
-                                Object sourceObject)
-    {
-        if (sourceObject == null && targetObject == null)
-        {
-            return null;
-        }
-        if (sourceObject == null)
-        {
-            return targetObject;
-        }
-        Class targetType = extractType(targetObject);
-        Class sourceType = sourceObject == null ? targetType : extractType(sourceObject);
-        return mergeObjects(targetObject, sourceObject, targetType, sourceType);
-    }
-
-    private Object mergeObjects(Object targetObject,
-                                Object sourceObject,
-                                Class targetType,
-                                Class sourceType)
-    {
-        return mergeObjects(targetObject, sourceObject, targetType, sourceType, null);
-    }
-
-    private Object mergeObjects(Object targetObject,
-                                Object sourceObject,
-                                Class targetType,
-                                Class sourceType,
-                                String mappingId)
-    {
-        if (!isMappingAllowedForType(targetType) || !isMappingAllowedForType(sourceType)
-                || Object.class.equals(targetType) || Object.class.equals(sourceType))
-        {
-            return convert(targetType, sourceObject);
-        }
-        if (sourceObject == null)
-        {
-            return targetObject;
-        }
-        if (targetObject == null)
-        {
-            targetObject = CSBeanUtils.createBeanInstance(targetType);
-        }
-        targetObject = mergeBeans(targetObject, sourceObject, targetType, sourceType, mappingId);
-        return targetObject;
     }
 
     public Object mergeBeans(Object targetObject,
@@ -186,8 +145,8 @@ public class CSBeanMapper
             }
             else
             {
-                targetPropertyValue = mergeObjects(targetPropertyValue, sourcePropertyValue, targetPropertyType,
-                                                   sourcePropertyType);
+                targetPropertyValue = mergeInternal(targetPropertyValue, sourcePropertyValue, targetPropertyType,
+                                                    sourcePropertyType);
             }
             CSBeanUtils.setProperty(targetObject, targetPropertyName, targetPropertyValue);
         }
@@ -258,7 +217,7 @@ public class CSBeanMapper
                 {
                     if (isMappingAllowedForType(extractType(targetElement)))
                     {
-                        mergeObjects(targetElement, sourceElement);
+                        mergeInternal(targetElement, sourceElement);
                     }
                     continue outer_loop;
                 }
@@ -327,7 +286,7 @@ public class CSBeanMapper
                                 Class sourceType,
                                 String mappingId)
     {
-        return mergeObjects(null, object, targetType, sourceType, mappingId);
+        return mergeInternal(null, object, targetType, sourceType, mappingId);
     }
 
     public Collection convertCollection(Collection targetCollection,
@@ -487,6 +446,53 @@ public class CSBeanMapper
         // return result.getSuperclass();
         // }
         return result;
+    }
+
+    private Object mergeInternal(Object targetObject,
+                                 Object sourceObject)
+    {
+        if (sourceObject == null && targetObject == null)
+        {
+            return null;
+        }
+        if (sourceObject == null)
+        {
+            return targetObject;
+        }
+        Class targetType = extractType(targetObject);
+        Class sourceType = sourceObject == null ? targetType : extractType(sourceObject);
+        return mergeInternal(targetObject, sourceObject, targetType, sourceType);
+    }
+
+    private Object mergeInternal(Object targetObject,
+                                 Object sourceObject,
+                                 Class targetType,
+                                 Class sourceType)
+    {
+        return mergeInternal(targetObject, sourceObject, targetType, sourceType, null);
+    }
+
+    private Object mergeInternal(Object targetObject,
+                                 Object sourceObject,
+                                 Class targetType,
+                                 Class sourceType,
+                                 String mappingId)
+    {
+        if (!isMappingAllowedForType(targetType) || !isMappingAllowedForType(sourceType)
+                || Object.class.equals(targetType) || Object.class.equals(sourceType))
+        {
+            return convert(targetType, sourceObject);
+        }
+        if (sourceObject == null)
+        {
+            return targetObject;
+        }
+        if (targetObject == null)
+        {
+            targetObject = CSBeanUtils.createBeanInstance(targetType);
+        }
+        targetObject = mergeBeans(targetObject, sourceObject, targetType, sourceType, mappingId);
+        return targetObject;
     }
 
 }

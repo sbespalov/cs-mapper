@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 
 import org.carlspring.beans.mapper.AnnotationMappingBuilder;
-import org.carlspring.beans.mapper.CSBeanMapper;
+import org.carlspring.beans.mapper.BeanMapper;
 import org.carlspring.beans.mapper.DefaultMappingProfile;
 import org.carlspring.beans.mapper.MappingConfig;
 import org.carlspring.beans.mapper.MappingProfile;
@@ -21,30 +21,30 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * @author Sergey Bespalov
  */
-public class CSBeanMapperFactoryBean implements FactoryBean<CSBeanMapper>, InitializingBean
+public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, InitializingBean
 {
-    private static final Logger LOGGER = Logger.getLogger(CSBeanMapperFactoryBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BeanMapperFactoryBean.class.getName());
 
     private List<Class<?>> mappedClasses;
-    private CSBeanMapper beanMapper;
+    private BeanMapper beanMapper;
     private MappingProfile mappingProfile;
-    private Class<? extends CSBeanMapper> beanHelperClass;
+    private Class<? extends BeanMapper> beanHelperClass;
     private String[] packagesToScan = new String[] {};
 
-    public CSBeanMapperFactoryBean()
+    public BeanMapperFactoryBean()
     {
         this(new DefaultMappingProfile());
     }
 
-    public CSBeanMapperFactoryBean(EntityManagerFactory entityManagerFactory)
+    public BeanMapperFactoryBean(EntityManagerFactory entityManagerFactory)
     {
         this(new DefaultMappingProfile(entityManagerFactory));
     }
 
-    public CSBeanMapperFactoryBean(MappingProfile mappingProfile)
+    public BeanMapperFactoryBean(MappingProfile mappingProfile)
     {
         super();
-        this.beanHelperClass = CSBeanMapper.class;
+        this.beanHelperClass = BeanMapper.class;
         this.mappingProfile = mappingProfile;
     }
 
@@ -53,12 +53,12 @@ public class CSBeanMapperFactoryBean implements FactoryBean<CSBeanMapper>, Initi
         this.packagesToScan = packagesToScan;
     }
 
-    public Class<? extends CSBeanMapper> getBeanHelperClass()
+    public Class<? extends BeanMapper> getBeanHelperClass()
     {
         return beanHelperClass;
     }
 
-    public void setBeanHelperClass(Class<? extends CSBeanMapper> beanHelperClass)
+    public void setBeanHelperClass(Class<? extends BeanMapper> beanHelperClass)
     {
         this.beanHelperClass = beanHelperClass;
     }
@@ -134,7 +134,7 @@ public class CSBeanMapperFactoryBean implements FactoryBean<CSBeanMapper>, Initi
         }
     }
 
-    public CSBeanMapper getObject()
+    public BeanMapper getObject()
         throws Exception
     {
         return beanMapper;
@@ -142,7 +142,7 @@ public class CSBeanMapperFactoryBean implements FactoryBean<CSBeanMapper>, Initi
 
     public Class<?> getObjectType()
     {
-        return CSBeanMapper.class;
+        return BeanMapper.class;
     }
 
     public boolean isSingleton()

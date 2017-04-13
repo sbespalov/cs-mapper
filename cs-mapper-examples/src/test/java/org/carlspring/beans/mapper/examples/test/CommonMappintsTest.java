@@ -3,7 +3,7 @@ package org.carlspring.beans.mapper.examples.test;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.carlspring.beans.mapper.CSBeanMapper;
+import org.carlspring.beans.mapper.BeanMapper;
 import org.carlspring.beans.mapper.examples.api.dto.PetStoreReadDto;
 import org.carlspring.beans.mapper.examples.domain.PetEntity;
 import org.carlspring.beans.mapper.examples.domain.PetStoreEntity;
@@ -21,7 +21,7 @@ public class CommonMappintsTest extends ConfigurationTest {
 	@Autowired
 	private PetStoreReposytory petStoreReposytory;
 	@Autowired
-	private CSBeanMapper beanMapper;
+	private BeanMapper beanMapper;
 
 	@Before
 	public void setUp() {
