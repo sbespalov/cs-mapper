@@ -48,8 +48,7 @@ public class DomainDtoGenerator
         return velocityEngine;
     }
 
-    public void setVelocityEngine(
-                                  VelocityEngine velocityEngine)
+    public void setVelocityEngine(                                  VelocityEngine velocityEngine)
     {
         this.velocityEngine = velocityEngine;
     }
@@ -59,8 +58,7 @@ public class DomainDtoGenerator
         return templateName;
     }
 
-    public void setTemplateName(
-                                String templateName)
+    public void setTemplateName(String templateName)
     {
         this.templateName = templateName;
     }
@@ -70,8 +68,7 @@ public class DomainDtoGenerator
         return summaryTemplateName;
     }
 
-    public void setSummaryTemplateName(
-                                       String summaryTemplateName)
+    public void setSummaryTemplateName(String summaryTemplateName)
     {
         this.summaryTemplateName = summaryTemplateName;
     }
@@ -81,22 +78,19 @@ public class DomainDtoGenerator
         return output;
     }
 
-    public void setOutput(
-                          String output)
+    public void setOutput(String output)
     {
         this.output = output;
     }
 
-    public void processGenerate(
-                                BeanDescriptor beanDescriptor)
+    public void processGenerate(BeanDescriptor beanDescriptor)
     {
         processGenerate(beanDescriptor.getPackageName(), Arrays.asList(new BeanDescriptor[] {
                                                                                               beanDescriptor
         }));
     }
 
-    public void processGenerate(
-                                String packageName,
+    public void processGenerate(String packageName,
                                 List<BeanDescriptor> beanDescriptors)
     {
         new File(getOutput()).mkdirs();

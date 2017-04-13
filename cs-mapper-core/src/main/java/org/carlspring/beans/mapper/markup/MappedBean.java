@@ -5,16 +5,18 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Map;
 
 /**
  * @author Sergey Bespalov
+ * 
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface CSProperty {
+@Target(ElementType.TYPE)
+public @interface MappedBean
+{
 
-	public String targetProperty() default "";
-	
-	public Class<?> targetType() default Object.class;
+    public Class[] value() default Map.class;
+
 }

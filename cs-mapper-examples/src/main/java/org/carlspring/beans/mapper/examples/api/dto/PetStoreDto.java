@@ -1,25 +1,22 @@
 package org.carlspring.beans.mapper.examples.api.dto;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.carlspring.beans.mapper.CSBeanUtils;
 import org.carlspring.beans.mapper.examples.domain.PetStore;
 
-public class PetSotreDto implements PetStore
+public class PetStoreDto<T extends PetStoreDto<T>> implements PetStore
 {
 
     private PetStore target = CSBeanUtils.createBeanInstance(PetStore.class);
-    private Set<PetDto> petSet = new HashSet<PetDto>();
 
-    public Set<PetDto> getPetSet()
+    public PetStoreDto()
     {
-        return petSet;
+        super();
     }
 
-    public void setPetSet(Set<PetDto> petSet)
+    public PetStoreDto(PetStore target)
     {
-        this.petSet = petSet;
+        super();
+        this.target = target;
     }
 
     public String getName()

@@ -4,7 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.carlspring.beans.mapper.CSBeanMapper;
-import org.carlspring.beans.mapper.examples.api.dto.PetSotreDto;
+import org.carlspring.beans.mapper.examples.api.dto.PetStoreReadDto;
 import org.carlspring.beans.mapper.examples.domain.PetEntity;
 import org.carlspring.beans.mapper.examples.domain.PetStoreEntity;
 import org.carlspring.beans.mapper.examples.repository.PetStoreReposytory;
@@ -42,7 +42,7 @@ public class CommonMappintsTest extends ConfigurationTest {
 	@Test
 	public void testNestedCollectionMapping() {
 		PetStoreEntity petStoreEntity = petStoreReposytory.findByName(COLL_PET_STORE);
-		PetSotreDto petStoreDto = (PetSotreDto) beanMapper.convertObject(petStoreEntity, PetSotreDto.class);
+		PetStoreReadDto petStoreDto = (PetStoreReadDto) beanMapper.convertObject(petStoreEntity, PetStoreReadDto.class);
 
 		Assert.assertNotNull(petStoreDto.getPetStoreId());
 		Assert.assertEquals(1, petStoreDto.getPetSet().size());

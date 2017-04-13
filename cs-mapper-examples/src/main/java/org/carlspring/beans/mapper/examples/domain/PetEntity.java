@@ -20,7 +20,7 @@ public class PetEntity extends CommonEntity
         this.name = name;
     }
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     public PetStoreEntity getPetStore()
     {
         return petStore;

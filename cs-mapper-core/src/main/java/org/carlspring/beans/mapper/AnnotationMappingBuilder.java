@@ -12,9 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.carlspring.beans.mapper.markup.CSExclude;
-import org.carlspring.beans.mapper.markup.CSMappedBean;
-import org.carlspring.beans.mapper.markup.CSProperty;
+import org.carlspring.beans.mapper.markup.ExcludeProperty;
+import org.carlspring.beans.mapper.markup.MappedBean;
+import org.carlspring.beans.mapper.markup.MappedProperty;
 import org.reflections.ReflectionUtils;
 
 import com.google.common.base.Predicate;
@@ -36,7 +36,7 @@ public class AnnotationMappingBuilder implements MappingBuilder
         Set<Class<?>> result = new HashSet<Class<?>>();
         for (Annotation annotation : ReflectionUtils.getAllAnnotations(source, new MappedBeanPredicate()))
         {
-            for (Class target : ((CSMappedBean) annotation).value())
+            for (Class target : ((MappedBean) annotation).value())
             {
                 result.add(target);
             }
@@ -96,7 +96,7 @@ public class AnnotationMappingBuilder implements MappingBuilder
             {
                 Method propertyMethod = propertyDescriptor.getReadMethod();
                 propertyMethod = propertyMethod == null ? propertyDescriptor.getWriteMethod() : propertyMethod;
-                if (getAnnotation(sourceClass, propertyMethod, CSExclude.class).size() > 0)
+                if (getAnnotation(sourceClass, propertyMethod, ExcludeProperty.class).size() > 0)
                 {
                     LOGGER.log(Level.FINE, String.format("Exclude property mapping: source-[%s.%s]; target-[%s]; ",
                                                          sourceClass.getSimpleName(), propertyDescriptor.getName(),
@@ -104,10 +104,9 @@ public class AnnotationMappingBuilder implements MappingBuilder
 
                     mappingBuilder.addExcludeProperty(propertyDescriptor.getName());
                 }
-                for (CSProperty csProperty : getAnnotation(sourceClass, propertyMethod, CSProperty.class))
+                for (MappedProperty csProperty : getAnnotation(sourceClass, propertyMethod, MappedProperty.class))
                 {
-                    String targetProperty = csProperty.targetProperty();
-                    Class<?> targetType = csProperty.targetType();
+                    String targetProperty = csProperty.value();
                     if (!StringUtils.isEmpty(targetProperty))
                     {
                         LOGGER.log(Level.FINE,
@@ -116,15 +115,6 @@ public class AnnotationMappingBuilder implements MappingBuilder
                                                  target.getSimpleName(),
                                                  targetProperty));
                         mappingBuilder.addCustomMapping(propertyDescriptor.getName(), targetProperty);
-                    }
-                    if (targetType != null && !Object.class.equals(targetType))
-                    {
-                        LOGGER.log(Level.FINE,
-                                   String.format("Custom property type: source-[%s.%s]; target-[%s.%s]; type-[%s]",
-                                                 sourceClass.getSimpleName(), propertyDescriptor.getName(),
-                                                 target.getSimpleName(),
-                                                 targetProperty, targetType.getSimpleName()));
-                        mappingBuilder.addTargetCustomType(propertyDescriptor.getName(), targetType);
                     }
                 }
             }
@@ -159,7 +149,7 @@ public class AnnotationMappingBuilder implements MappingBuilder
     {
         public boolean apply(Annotation input)
         {
-            return input instanceof CSMappedBean;
+            return input instanceof MappedBean;
         }
     }
 

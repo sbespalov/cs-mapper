@@ -8,14 +8,13 @@ import java.lang.annotation.Target;
 
 /**
  * @author Sergey Bespalov
- * 
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface CSMappedBean
+@Target(ElementType.METHOD)
+public @interface MappedProperty
 {
 
-    public Class[] value();
+    public String value();
 
 }

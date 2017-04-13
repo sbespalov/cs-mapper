@@ -3,9 +3,20 @@ package org.carlspring.beans.mapper.examples.api.dto;
 import org.carlspring.beans.mapper.CSBeanUtils;
 import org.carlspring.beans.mapper.examples.domain.Pet;
 
-public class PetDto implements Pet
+public class PetDto<T extends PetDto<T>> implements Pet
 {
     private Pet target = CSBeanUtils.createBeanInstance(Pet.class);
+
+    public PetDto()
+    {
+        super();
+    }
+
+    public PetDto(Pet target)
+    {
+        super();
+        this.target = target;
+    }
 
     public Long getPetStoreId()
     {
