@@ -10,7 +10,6 @@ public class TransactionAwareEntityManagerLocator implements EntityManagerLocato
 {
 
     private EntityManagerFactory emf;
-    private volatile EntityManager entityManager;
 
     public TransactionAwareEntityManagerLocator(EntityManagerFactory emf)
     {
@@ -20,15 +19,7 @@ public class TransactionAwareEntityManagerLocator implements EntityManagerLocato
 
     public EntityManager lookupEntityManager()
     {
-        if (entityManager == null)
-        {
-            synchronized (this)
-            {
-                entityManager = entityManager == null ? EntityManagerFactoryUtils.getTransactionalEntityManager(emf)
-                        : entityManager;
-            }
-        }
-        return entityManager;
+        return EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
     }
 
 }
