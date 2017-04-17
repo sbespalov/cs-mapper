@@ -5,17 +5,18 @@ import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.beanutils.converters.AbstractConverter;
 import org.carlspring.beans.Identifiable;
+import org.carlspring.beans.jpa.EntityManagerLocator;
 
 public class EntityConverter extends AbstractConverter
 {
-    private EntityManagerFactory entityManagerFactory;
+    private EntityManagerLocator entityManagerLocator;
     private Class<? extends Identifiable> defaultType;
 
-    public EntityConverter(EntityManagerFactory entityManagerFactory,
+    public EntityConverter(EntityManagerLocator entityManagerLocator,
                            Class<? extends Identifiable> defaultType)
     {
         super();
-        this.entityManagerFactory = entityManagerFactory;
+        this.entityManagerLocator = entityManagerLocator;
         this.defaultType = defaultType;
     }
 
@@ -24,7 +25,7 @@ public class EntityConverter extends AbstractConverter
                                    Object value)
         throws Throwable
     {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityManager entityManager = entityManagerLocator.lookupEntityManager();
         
         if (value != null)
         {

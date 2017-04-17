@@ -38,7 +38,7 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
 
     public BeanMapperFactoryBean(EntityManagerFactory entityManagerFactory)
     {
-        this(new DefaultMappingProfile(entityManagerFactory));
+        this(new DefaultMappingProfile(new TransactionAwareEntityManagerLocator(entityManagerFactory)));
     }
 
     public BeanMapperFactoryBean(MappingProfile mappingProfile)

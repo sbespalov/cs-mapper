@@ -18,7 +18,8 @@ import org.apache.commons.beanutils.Converter;
 import org.apache.commons.collections.iterators.ArrayIterator;
 
 /**
- * BeanMapper provide functionality for merge POJO objects of different classes, based on specific mappings.
+ * BeanMapper provide functionality for merge POJO objects of different classes,
+ * based on specific mappings.
  * 
  * @author Sergey Bespalov
  *
@@ -165,7 +166,8 @@ public class BeanMapper
             return beanMapping.getPropertyMappings();
         }
 
-        // We are forced to create mappings dynamically in case of `Map`
+        // We are forced to create mappings dynamically in
+        // case of `Map`
         List<PropertyMapping> propertyMappings = new ArrayList<PropertyMapping>();
         Map<String, Object> map = (Map<String, Object>) sourceObject;
         for (String key : map.keySet())
@@ -436,7 +438,9 @@ public class BeanMapper
         }
         // Class<?> cglibProxyFactroryClass =
         // Class.forName("net.sf.cglib.proxy.Factory");
-        // if (cglibProxyFactroryClass.isAssignableFrom(result)) {
+        // if
+        // (cglibProxyFactroryClass.isAssignableFrom(result))
+        // {
         // Class<?>[] interfaces = result.getInterfaces();
         // for (Class<?> clazz : interfaces) {
         // if (!clazz.equals(cglibProxyFactroryClass)) {

@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.converters.BigDecimalConverter;
 import org.apache.commons.beanutils.converters.BigIntegerConverter;
@@ -24,6 +22,7 @@ import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.apache.commons.beanutils.converters.LongConverter;
 import org.apache.commons.beanutils.converters.ShortConverter;
 import org.apache.commons.beanutils.converters.StringConverter;
+import org.carlspring.beans.jpa.EntityManagerLocator;
 
 /**
  * @author Sergey Bespalov
@@ -35,17 +34,17 @@ public class DefaultMappingProfile implements MappingProfile
 
     private Map<Class, Converter> converters = new HashMap<Class, Converter>();
     private boolean allowDefaultMapping = true;
-    private EntityManagerFactory entityManagerFactory;
+    private EntityManagerLocator entityManagerLocator;
 
     public DefaultMappingProfile()
     {
         super();
     }
 
-    public DefaultMappingProfile(EntityManagerFactory entityManagerFactory)
+    public DefaultMappingProfile(EntityManagerLocator entityManagerLocator)
     {
         super();
-        this.entityManagerFactory = entityManagerFactory;
+        this.entityManagerLocator = entityManagerLocator;
     }
 
     public boolean isSimpleType(Class type)
@@ -139,14 +138,14 @@ public class DefaultMappingProfile implements MappingProfile
         this.converters = converters;
     }
 
-    public EntityManagerFactory getEntityManagerFactory()
+    public EntityManagerLocator getEntityManagerLocator()
     {
-        return entityManagerFactory;
+        return entityManagerLocator;
     }
 
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory)
+    public void setEntityManagerLocator(EntityManagerLocator entityManagerLocator)
     {
-        this.entityManagerFactory = entityManagerFactory;
+        this.entityManagerLocator = entityManagerLocator;
     }
 
 }

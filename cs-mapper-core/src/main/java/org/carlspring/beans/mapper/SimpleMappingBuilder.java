@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.collections.CollectionUtils;
@@ -178,7 +177,7 @@ public class SimpleMappingBuilder implements MappingBuilder
     private void addConverters()
     {
         DefaultMappingProfile defaultProfile = getCastedDefaultProfile();
-        if (defaultProfile == null || defaultProfile.getEntityManagerFactory() == null)
+        if (defaultProfile == null || defaultProfile.getEntityManagerLocator() == null)
         {
             return;
         }
@@ -190,13 +189,13 @@ public class SimpleMappingBuilder implements MappingBuilder
         if (isEntityClass(sourceClass))
         {
             defaultProfile.registerConverter(sourceClass,
-                                             new EntityConverter(defaultProfile.getEntityManagerFactory(),
+                                             new EntityConverter(defaultProfile.getEntityManagerLocator(),
                                                      (Class<? extends Identifiable>) sourceClass));
         }
         if (isEntityClass(targetClass))
         {
             defaultProfile.registerConverter(targetClass,
-                                             new EntityConverter(defaultProfile.getEntityManagerFactory(),
+                                             new EntityConverter(defaultProfile.getEntityManagerLocator(),
                                                      (Class<? extends Identifiable>) targetClass));
         }
     }
