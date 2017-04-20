@@ -15,7 +15,7 @@ There are usage examples below, which will help to make some details clearer.
 
 # Usage
 
-All features, that ** _ CSMapper _ ** provides, can be used out of the box with well known Java technology stack, such as Spring and Hibernate. The configuration is very simple and takes about 15 minutes:
+All features, that **_CSMapper_** provides, can be used out of the box with well known Java technology stack, such as Spring and Hibernate. The configuration is very simple and takes about 15 minutes:
 
 #### 1. Generate **_JPA Entity_** based **_POJOs_**
 
