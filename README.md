@@ -81,7 +81,7 @@ The code generation process occurs during the project build. This is done using 
 ```
 > Note that this configuration must be placed in module, that contains JPA Entities
 
-#### 2. **_BeanMapper_* instace configuration
+#### 2. **_BeanMapper_** instace configuration
 
 
 ## Common Use Cases
