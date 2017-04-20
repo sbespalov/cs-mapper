@@ -85,3 +85,5 @@ The code generation process occurs during the project build. This is done using 
 
 
 ## Common Use Cases
+
+Usage examples can be found [here](https://github.com/sbespalov/cs-mapper/tree/master/cs-mapper-examples)
