@@ -21,7 +21,7 @@ All features, that **_CSMapper_** provides, can be used out of the box with well
 
 The code generation process occurs during the project build. This is done using the Maven plugin:
 
-```
+```xml
 	<build>
 		<plugins>
 			<plugin>
@@ -83,6 +83,23 @@ The code generation process occurs during the project build. This is done using 
 
 #### 2. **_BeanMapper_** instace configuration
 
+**_BeanMapper_** can be easily configured inside Spring application context using **_BeanMapperFactoryBean_** like this:
+
+```java
+@Configuration
+public class AppConfiguration {
+
+    @Bean
+    public BeanMapperFactoryBean beanMapper(EntityManagerFactory emf)
+    {
+        BeanMapperFactoryBean result = new BeanMapperFactoryBean(emf);
+        result.setMappedClasses(Arrays.asList(DomainDtoClasses.domainDtoClasses));
+        result.setPackagesToScan("your.application.package.name.api.dto");
+        return result;
+    }
+}
+
+```
 
 ## Common Use Cases
 
