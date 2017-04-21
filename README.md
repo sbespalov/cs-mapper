@@ -119,8 +119,7 @@ public class SampleApiService {
 
     public PetStoreReadDto getPetStore(Long petStoreId) {
         PetStoreEntity petStoreEntity = entityManager.find(PetStoreEntity.class, petStoreId);  
-        PetStoreReadDto petStoreDto = (PetStoreReadDto) beanMapper.convertObject(petStoreEntity, PetStoreReadDto.class);
-        return petStoreDto;
+        return (PetStoreReadDto) beanMapper.convertObject(petStoreEntity, PetStoreReadDto.class);
     }
 
 }
