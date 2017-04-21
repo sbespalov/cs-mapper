@@ -13,6 +13,7 @@ import org.carlspring.beans.mapper.BeanMapper;
 import org.carlspring.beans.mapper.DefaultMappingProfile;
 import org.carlspring.beans.mapper.MappingConfig;
 import org.carlspring.beans.mapper.MappingProfile;
+import org.carlspring.beans.mapper.markup.MappedBean;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.FactoryBean;
@@ -25,7 +26,6 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
 {
     private static final Logger LOGGER = Logger.getLogger(BeanMapperFactoryBean.class.getName());
 
-    private List<Class<?>> mappedClasses;
     private BeanMapper beanMapper;
     private MappingProfile mappingProfile;
     private Class<? extends BeanMapper> beanHelperClass;
@@ -68,11 +68,6 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
         this.mappingProfile = mappingProfile;
     }
 
-    public void setMappedClasses(List<Class<?>> mappedClasses)
-    {
-        this.mappedClasses = mappedClasses;
-    }
-
     public void afterPropertiesSet()
         throws Exception
     {
@@ -105,11 +100,12 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
 
     private void addMappings(MappingConfig mappingConfig)
     {
-        if (mappedClasses == null)
+        List<Object> reflectionsConfig = new ArrayList<Object>();
+        if (packagesToScan.length == 0)
         {
             return;
         }
-        List<Object> reflectionsConfig = new ArrayList<Object>();
+        
         for (String packageName : packagesToScan)
         {
             reflectionsConfig.add(packageName);
@@ -118,7 +114,7 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
 
         Reflections reflections = new Reflections(reflectionsConfig.toArray(new Object[] {}));
 
-        for (Class<?> mappedClass : mappedClasses)
+        for (Class<?> mappedClass : reflections.getTypesAnnotatedWith(MappedBean.class))
         {
             mappingConfig.registerMappings(new AnnotationMappingBuilder(mappingProfile, mappedClass));
 
@@ -130,7 +126,6 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
                 LOGGER.log(Level.FINE, String.format("DTO mapping registered: class-[%s]", dtoClass));
 
             }
-            // String dtoClassName = mappedClass.getCanonicalName() + "Dto";
         }
     }
 
