@@ -105,6 +105,27 @@ public class AppConfiguration {
 
 ```
 
+#### 3. Merge POJOs with **_JPA Entities_** with **_BeanMapper_**
+
+```java
+@Component
+public class SampleApiService {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private BeanMapper beanMapper;
+
+    public PetStoreReadDto getPetStore(Long petStoreId) {
+        PetStoreEntity petStoreEntity = entityManager.find(PetStoreEntity.class, petStoreId);  
+        PetStoreReadDto petStoreDto = (PetStoreReadDto) beanMapper.convertObject(petStoreEntity, PetStoreReadDto.class);
+        return petStoreDto;
+    }
+
+}
+```
+
 ## Common Use Cases
 
 Usage examples can be found [here](https://github.com/sbespalov/cs-mapper/tree/master/cs-mapper-examples)
