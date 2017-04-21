@@ -85,11 +85,13 @@ We using the `DomainDtoDoclet` to get **_JPA Entities_** metadata from `.java` s
 
 #### 2. **_BeanMapper_** instace configuration
 
-**_BeanMapper_** can be easily configured inside Spring application context using **_BeanMapperFactoryBean_** like this:
+**_BeanMapper_** can be easily configured inside **_Spring Application Context_** using **_BeanMapperFactoryBean_** like this:
 
 ```java
 @Configuration
 public class AppConfiguration {
+
+   ...
 
     @Bean
     public BeanMapperFactoryBean beanMapper(EntityManagerFactory emf)
