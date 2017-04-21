@@ -81,6 +81,8 @@ The code generation process occurs during the project build. This is done using 
 ```
 > Note that this configuration must be placed in module, that contains JPA Entities
 
+We using the `DomainDtoDoclet` to get **_JPA Entities_** metadata from `.java` sources. Also there will be a dedicated `cs-mapper-plugin` instead of `maven-javadoc-plugin` and `build-helper-maven-plugin` in future versions.
+
 #### 2. **_BeanMapper_** instace configuration
 
 **_BeanMapper_** can be easily configured inside Spring application context using **_BeanMapperFactoryBean_** like this:
