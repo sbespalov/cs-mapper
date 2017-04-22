@@ -24,27 +24,27 @@ import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.Tag;
 
+/**
+ * This Doclet prepare context with JPA Entities metadata, on the basis of
+ * which the Domain DTO code is generated.
+ * 
+ * @author Sergey Bespalov
+ * 
+ * @see DomainDtoGenerator
+ */
 public class DomainDtoDoclet
 {
 
     private static final String TAG_DOMAIN_EXCLUDE = "@domainExclude";
-
     private static final String TAG_DOMAIN_PROERTY = "@domainProperty";
-
     private static final String DTO_SUFFIX = "";
-
     private static final String DTO_PREFIX = "";
-
     private static final String BASE_PACKAGE = "-basepackage";
-
     private static final String OUTPUT_FOLDER = "-outputfolder";
-
     private static final String PREFEXED_PROPERTIES = "-prefexedproperties";
-
     private static final String EXCLUDED_PROPERTIES = "-excludedproperties";
 
     private static final Set<String> skipAnnotations = new HashSet<String>();
-
     private static final Set<String> nesteedAnnotations = new HashSet<String>();
 
     static
@@ -57,8 +57,7 @@ public class DomainDtoDoclet
         nesteedAnnotations.add("org.hibernate.annotations.Type");
     }
 
-    public static int optionLength(
-                                   String option)
+    public static int optionLength(String option)
     {
         if (option.equals(OUTPUT_FOLDER))
         {
@@ -79,11 +78,8 @@ public class DomainDtoDoclet
         return 0;
     }
 
-    private static String getOutputFolder(
-                                          String[][] options)
+    private static String getOutputFolder(String[][] options)
     {
-        List<String> result = new ArrayList<String>();
-        String entities = null;
         for (int i = 0; i < options.length; i++)
         {
             String[] opt = options[i];
@@ -95,11 +91,8 @@ public class DomainDtoDoclet
         return ".";
     }
 
-    private static String getBasePackage(
-                                         String[][] options)
+    private static String getBasePackage(String[][] options)
     {
-        List<String> result = new ArrayList<String>();
-        String entities = null;
         for (int i = 0; i < options.length; i++)
         {
             String[] opt = options[i];
@@ -111,11 +104,9 @@ public class DomainDtoDoclet
         return "";
     }
 
-    private static Set<String> getPrefexedProperties(
-                                                     String[][] options)
+    private static Set<String> getPrefexedProperties(String[][] options)
     {
         Set<String> result = new HashSet<String>();
-        String entities = null;
         for (int i = 0; i < options.length; i++)
         {
             String[] opt = options[i];
@@ -131,11 +122,9 @@ public class DomainDtoDoclet
         return result;
     }
 
-    private static Set<String> getExcludedProperties(
-                                                     String[][] options)
+    private static Set<String> getExcludedProperties(String[][] options)
     {
         Set<String> result = new HashSet<String>();
-        String entities = null;
         for (int i = 0; i < options.length; i++)
         {
             String[] opt = options[i];
@@ -152,8 +141,7 @@ public class DomainDtoDoclet
         return result;
     }
 
-    public static boolean start(
-                                RootDoc root)
+    public static boolean start(RootDoc root)
         throws Throwable
     {
         String outputFolder = getOutputFolder(root.options());
@@ -162,7 +150,6 @@ public class DomainDtoDoclet
         String basePackage = getBasePackage(root.options());
         Set<String> prefexedProperties = getPrefexedProperties(root.options());
         Set<String> excludedProperties = getExcludedProperties(root.options());
-        // Set<String> propertiesContext = new HashSet<String>();
         List<BeanDescriptor> beanDescriptors = new ArrayList<BeanDescriptor>();
         for (ClassDoc classDoc : root.classes())
         {
@@ -175,7 +162,6 @@ public class DomainDtoDoclet
                     isEntity = true;
                 }
             }
-            // isEntity = classDoc.name().contains("AccountAnlEntity") ? true : false;
             if (!isEntity)
             {
                 continue;
@@ -291,15 +277,13 @@ public class DomainDtoDoclet
         return true;
     }
 
-    private static boolean isGetter(
-                                    MethodDoc methodDoc)
+    private static boolean isGetter(MethodDoc methodDoc)
     {
         String methodName = methodDoc.name();
         return methodName.startsWith("is") || methodName.startsWith("get");
     }
 
-    private static String extractPropertyName(
-                                              MethodDoc methodDoc)
+    private static String extractPropertyName(MethodDoc methodDoc)
     {
         String methodName = methodDoc.name();
         if (methodName.startsWith("is"))
