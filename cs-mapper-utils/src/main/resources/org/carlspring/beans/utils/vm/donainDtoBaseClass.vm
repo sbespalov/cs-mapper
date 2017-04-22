@@ -1,0 +1,37 @@
+#macro( beanPopertyDelegateMacro $beanProperty $global)
+	#set($stringUtils = $global.get("stringUtils"))
+
+	public $beanProperty.type get$stringUtils.capitalize(${beanProperty.name})(){
+		return target.get$stringUtils.capitalize(${beanProperty.name})();
+	}
+	
+	public void set$stringUtils.capitalize(${beanProperty.name})($beanProperty.type p$stringUtils.capitalize(${beanProperty.name})){
+		target.set$stringUtils.capitalize(${beanProperty.name})(p$stringUtils.capitalize(${beanProperty.name}));
+	}
+	
+	public ${className}<T> $stringUtils.capitalize(${beanProperty.name})($beanProperty.type p$stringUtils.capitalize(${beanProperty.name})){
+		target.set$stringUtils.capitalize(${beanProperty.name})(p$stringUtils.capitalize(${beanProperty.name}));
+		return this;
+	}
+		
+#end
+#set($className = "${beanDescriptor.className}BaseDto")
+package $beanDescriptor.packageName;
+
+public class ${className}<T extends ${className}<T>> implements ${beanDescriptor.className} {
+
+	protected ${beanDescriptor.className} target = org.carlspring.beans.mapper.CSBeanUtils.createBeanInstance(${beanDescriptor.className}.class);
+
+	public ${className}(){
+	}
+	
+	public ${className}(${beanDescriptor.className} target){
+		this.target = target;
+	}
+
+	#foreach( $beanProperty in $beanDescriptor.properties)
+		#beanPopertyDelegateMacro($beanProperty $global)
+	#end
+
+
+}

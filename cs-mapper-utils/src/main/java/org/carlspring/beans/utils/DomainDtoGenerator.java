@@ -14,8 +14,10 @@ import org.apache.velocity.app.VelocityEngine;
 public class DomainDtoGenerator
 {
 
+    private static final String TEMPLATE_DTO_INTERFACE = "org/carlspring/beans/utils/vm/domainDtoInterface.vm";
+    private static final String TEMPLATE_DTO_CLASS = "org/carlspring/beans/utils/vm/donainDtoBaseClass.vm";
+    
     private VelocityEngine velocityEngine;
-    private String templateName = "org/carlspring/beans/utils/vm/domainDto.vm";
     private String summaryTemplateName = "org/carlspring/beans/utils/vm/domainSummary.vm";
     private String output = ".";
 
@@ -48,19 +50,9 @@ public class DomainDtoGenerator
         return velocityEngine;
     }
 
-    public void setVelocityEngine(                                  VelocityEngine velocityEngine)
+    public void setVelocityEngine(VelocityEngine velocityEngine)
     {
         this.velocityEngine = velocityEngine;
-    }
-
-    public String getTemplateName()
-    {
-        return templateName;
-    }
-
-    public void setTemplateName(String templateName)
-    {
-        this.templateName = templateName;
     }
 
     public String getSummaryTemplateName()
@@ -103,32 +95,8 @@ public class DomainDtoGenerator
             context.put("global", context);
             context.put("stringUtils", new StringUtils());
             context.put("beanDescriptor", beanDescriptor);
-            FileWriter writer = null;
-            try
-            {
-                File classFile = new File(packagePath + beanDescriptor.getClassName() + ".java");
-                classFile.createNewFile();
-                writer = new FileWriter(classFile);
-                velocityEngine.mergeTemplate(getTemplateName(), context, writer);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException("Failed to generate class [" + beanDescriptor.getClassName() + "]", e);
-            } finally
-            {
-                if (writer != null)
-                {
-                    try
-                    {
-                        writer.close();
-                    }
-                    catch (IOException e)
-                    {
-                        throw new RuntimeException("Failed to generate class [" + beanDescriptor.getClassName() + "]",
-                                e);
-                    }
-                }
-            }
+            generate(packagePath + beanDescriptor.getClassName() + ".java", TEMPLATE_DTO_INTERFACE, beanDescriptor, context);
+            generate(packagePath + beanDescriptor.getClassName() + "BaseDto.java", TEMPLATE_DTO_CLASS, beanDescriptor, context);
         }
         VelocityContext context = new VelocityContext();
         context.put("global", context);
@@ -162,6 +130,51 @@ public class DomainDtoGenerator
             }
         }
 
+    }
+
+    private void generate(String className,
+                          String templateName,
+                          BeanDescriptor beanDescriptor,
+                          VelocityContext context)
+    {
+        FileWriter writer = null;
+        try
+        {
+            writer = doGenerate(className, templateName, beanDescriptor, context);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Failed to generate class [" + beanDescriptor.getClassName() + "]", e);
+        } finally
+        {
+            if (writer != null)
+            {
+                try
+                {
+                    writer.close();
+                }
+                catch (IOException e)
+                {
+                    throw new RuntimeException("Failed to generate class [" + beanDescriptor.getClassName() + "]",
+                            e);
+                }
+            }
+        }
+    }
+
+    private FileWriter doGenerate(String className,
+                                  String templateName,
+                                  BeanDescriptor beanDescriptor,
+                                  VelocityContext context)
+        throws IOException
+    {
+        FileWriter writer;
+        File classFile = new File(className);
+        System.out.println(className);
+        classFile.createNewFile();
+        writer = new FileWriter(classFile);
+        velocityEngine.mergeTemplate(templateName, context, writer);
+        return writer;
     }
 
 }

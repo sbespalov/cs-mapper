@@ -4,9 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.carlspring.beans.mapper.examples.domain.PetStore;
+import org.carlspring.beans.mapper.examples.domain.PetStoreBaseDto;
 import org.carlspring.beans.mapper.markup.MappedProperty;
 
-public class PetStoreWriteDto extends PetStoreDto<PetStoreWriteDto>
+public class PetStoreWriteDto extends PetStoreBaseDto<PetStoreWriteDto>
 {
 
     private Set<Long> petIdSet = new HashSet<Long>();

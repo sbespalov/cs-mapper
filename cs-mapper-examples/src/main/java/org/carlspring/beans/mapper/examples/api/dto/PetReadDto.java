@@ -1,9 +1,10 @@
 package org.carlspring.beans.mapper.examples.api.dto;
 
 import org.carlspring.beans.mapper.examples.domain.Pet;
+import org.carlspring.beans.mapper.examples.domain.PetBaseDto;
 import org.carlspring.beans.mapper.markup.MappedProperty;
 
-public class PetReadDto extends PetDto<PetReadDto>
+public class PetReadDto extends PetBaseDto<PetReadDto>
 {
     private String petStoreName;
 

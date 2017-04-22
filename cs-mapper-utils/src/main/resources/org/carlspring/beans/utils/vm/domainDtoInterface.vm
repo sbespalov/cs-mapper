@@ -1,13 +1,13 @@
 #macro( annotationAttributesMacro $annotationAttributes $global )
-	#foreach( $attributeName in $annotationAttributes.keySet() )
-	    #set($attributeValue = $annotationAttributes.get($attributeName))
-		#if($attributeValue.size()==1)$attributeName = $attributeValue.get(0)#end
-	#end
+#foreach( $attributeName in $annotationAttributes.keySet() )
+#set($attributeValue = $annotationAttributes.get($attributeName))
+#if($attributeValue.size()==1)$attributeName = $attributeValue.get(0)#end
+#end
 #end
 #macro( annotationsMacro $annotations $global )
-	#foreach( $annotation in $annotations)
-			@${annotation.className}(#annotationAttributesMacro($annotation.attributes $global))
-	#end
+#foreach( $annotation in $annotations)
+@${annotation.className}(#annotationAttributesMacro($annotation.attributes $global))
+#end
 #end
 
 #macro( beanPopertyMacro $beanProperty $global)
@@ -17,16 +17,14 @@
 	public $beanProperty.type get$stringUtils.capitalize(${beanProperty.name})();
 	
 	public void set$stringUtils.capitalize(${beanProperty.name})($beanProperty.type p$stringUtils.capitalize(${beanProperty.name}));
-		
 #end
 package $beanDescriptor.packageName;
 
 #annotationsMacro($beanDescriptor.annotations $global)
 public interface $beanDescriptor.className {
 
-	#foreach( $beanProperty in $beanDescriptor.properties)
-		#beanPopertyMacro($beanProperty $global)
-	#end
-
+#foreach( $beanProperty in $beanDescriptor.properties)
+	#beanPopertyMacro($beanProperty $global)
+#end
 
 }

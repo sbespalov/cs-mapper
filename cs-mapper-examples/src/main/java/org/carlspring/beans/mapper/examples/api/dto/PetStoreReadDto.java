@@ -4,11 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.carlspring.beans.mapper.examples.domain.PetStore;
+import org.carlspring.beans.mapper.examples.domain.PetStoreBaseDto;
 
-public class PetStoreReadDto extends PetStoreDto<PetStoreReadDto>
+public class PetStoreReadDto extends PetStoreBaseDto<PetStoreReadDto>
 {
 
-    private Set<PetDto> petSet = new HashSet<PetDto>();
+    private Set<PetReadDto> petSet = new HashSet<PetReadDto>();
 
     public PetStoreReadDto()
     {
@@ -20,12 +21,12 @@ public class PetStoreReadDto extends PetStoreDto<PetStoreReadDto>
         super(target);
     }
 
-    public Set<PetDto> getPetSet()
+    public Set<PetReadDto> getPetSet()
     {
         return petSet;
     }
 
-    public void setPetSet(Set<PetDto> petSet)
+    public void setPetSet(Set<PetReadDto> petSet)
     {
         this.petSet = petSet;
     }
