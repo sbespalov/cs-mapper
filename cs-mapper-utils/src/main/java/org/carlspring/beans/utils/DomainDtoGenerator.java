@@ -11,6 +11,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
+/**
+ * This class makes Domain DTO code generation using Apache Velocity
+ * templates.<br>
+ * There are three types of artifacts produced:<br>
+ * - plain interfaces, based on JPA Entities, called Domain DTO Interfaces;<br>
+ * - generic DTO classes, which implements Domain DTO Interfaces;<br>
+ * - Domain 'DomainDtoClasses' summary class, which contains all generated classes
+ * as array constant;<br>
+ * 
+ * @author Sergey Bespalov
+ *
+ */
 public class DomainDtoGenerator
 {
 
@@ -23,36 +35,18 @@ public class DomainDtoGenerator
 
     public DomainDtoGenerator()
     {
-        this(null);
-    }
-
-    public DomainDtoGenerator(Properties properties)
-    {
         velocityEngine = new VelocityEngine();
         try
         {
-            if (properties == null)
-            {
-                properties = new Properties();
-                properties.load(getClass().getClassLoader()
-                                          .getResourceAsStream("org/carlspring/beans/utils/vm/velocity.properties"));
-            }
+            Properties properties = new Properties();
+            properties.load(getClass().getClassLoader()
+                                      .getResourceAsStream("org/carlspring/beans/utils/vm/velocity.properties"));
             velocityEngine.init(properties);
         }
         catch (Exception e)
         {
             throw new RuntimeException("Failed to construct DomainDtoGenerator.", e);
         }
-    }
-
-    public VelocityEngine getVelocityEngine()
-    {
-        return velocityEngine;
-    }
-
-    public void setVelocityEngine(VelocityEngine velocityEngine)
-    {
-        this.velocityEngine = velocityEngine;
     }
 
     public String getOutput()
@@ -67,9 +61,7 @@ public class DomainDtoGenerator
 
     public void processGenerate(BeanDescriptor beanDescriptor)
     {
-        processGenerate(beanDescriptor.getPackageName(), Arrays.asList(new BeanDescriptor[] {
-                                                                                              beanDescriptor
-        }));
+        processGenerate(beanDescriptor.getPackageName(), Arrays.asList(new BeanDescriptor[] { beanDescriptor }));
     }
 
     public void processGenerate(String packageName,
