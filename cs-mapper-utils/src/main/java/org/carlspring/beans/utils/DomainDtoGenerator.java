@@ -16,9 +16,9 @@ public class DomainDtoGenerator
 
     private static final String TEMPLATE_DTO_INTERFACE = "org/carlspring/beans/utils/vm/domainDtoInterface.vm";
     private static final String TEMPLATE_DTO_CLASS = "org/carlspring/beans/utils/vm/donainDtoBaseClass.vm";
-    
+    private static final String TEMPLATE_SUMMARY = "org/carlspring/beans/utils/vm/domainSummary.vm";
+
     private VelocityEngine velocityEngine;
-    private String summaryTemplateName = "org/carlspring/beans/utils/vm/domainSummary.vm";
     private String output = ".";
 
     public DomainDtoGenerator()
@@ -55,16 +55,6 @@ public class DomainDtoGenerator
         this.velocityEngine = velocityEngine;
     }
 
-    public String getSummaryTemplateName()
-    {
-        return summaryTemplateName;
-    }
-
-    public void setSummaryTemplateName(String summaryTemplateName)
-    {
-        this.summaryTemplateName = summaryTemplateName;
-    }
-
     public String getOutput()
     {
         return output;
@@ -86,65 +76,48 @@ public class DomainDtoGenerator
                                 List<BeanDescriptor> beanDescriptors)
     {
         new File(getOutput()).mkdirs();
-        String packagePath = getOutput() + File.separator + packageName.replaceAll("\\.", "\\" + File.separator)
-                + File.separator;
+        String packagePath = getPackagePath(packageName);
         new File(packagePath).mkdirs();
+
         for (BeanDescriptor beanDescriptor : beanDescriptors)
         {
             VelocityContext context = new VelocityContext();
             context.put("global", context);
             context.put("stringUtils", new StringUtils());
             context.put("beanDescriptor", beanDescriptor);
-            generate(packagePath + beanDescriptor.getClassName() + ".java", TEMPLATE_DTO_INTERFACE, beanDescriptor, context);
-            generate(packagePath + beanDescriptor.getClassName() + "BaseDto.java", TEMPLATE_DTO_CLASS, beanDescriptor, context);
+
+            generate(packagePath + beanDescriptor.getClassName() + ".java", TEMPLATE_DTO_INTERFACE, context);
+            generate(packagePath + beanDescriptor.getClassName() + "BaseDto.java", TEMPLATE_DTO_CLASS, context);
         }
+
         VelocityContext context = new VelocityContext();
         context.put("global", context);
         context.put("stringUtils", new StringUtils());
         context.put("packageName", packageName);
         context.put("summaryClassName", "DomainDtoClasses");
         context.put("domainDtoList", beanDescriptors);
-        FileWriter writer = null;
-        try
-        {
-            File classFile = new File(packagePath + "DomainDtoClasses.java");
-            classFile.createNewFile();
-            writer = new FileWriter(classFile);
-            velocityEngine.mergeTemplate(getSummaryTemplateName(), context, writer);
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException("Failed to generate class [DomainDtoClasses]", e);
-        } finally
-        {
-            if (writer != null)
-            {
-                try
-                {
-                    writer.close();
-                }
-                catch (IOException e)
-                {
-                    throw new RuntimeException("Failed to generate class [DomainDtoClasses]", e);
-                }
-            }
-        }
 
+        generate(packagePath + "DomainDtoClasses.java", TEMPLATE_SUMMARY, context);
+    }
+
+    private String getPackagePath(String packageName)
+    {
+        return getOutput() + File.separator + packageName.replaceAll("\\.", "\\" + File.separator)
+                + File.separator;
     }
 
     private void generate(String className,
                           String templateName,
-                          BeanDescriptor beanDescriptor,
                           VelocityContext context)
     {
         FileWriter writer = null;
         try
         {
-            writer = doGenerate(className, templateName, beanDescriptor, context);
+            writer = doGenerate(className, templateName, context);
         }
         catch (Exception e)
         {
-            throw new RuntimeException("Failed to generate class [" + beanDescriptor.getClassName() + "]", e);
+            throw new RuntimeException("Failed to generate class [" + className + "]", e);
         } finally
         {
             if (writer != null)
@@ -155,7 +128,7 @@ public class DomainDtoGenerator
                 }
                 catch (IOException e)
                 {
-                    throw new RuntimeException("Failed to generate class [" + beanDescriptor.getClassName() + "]",
+                    throw new RuntimeException("Failed to generate class [" + className + "]",
                             e);
                 }
             }
@@ -164,7 +137,6 @@ public class DomainDtoGenerator
 
     private FileWriter doGenerate(String className,
                                   String templateName,
-                                  BeanDescriptor beanDescriptor,
                                   VelocityContext context)
         throws IOException
     {
