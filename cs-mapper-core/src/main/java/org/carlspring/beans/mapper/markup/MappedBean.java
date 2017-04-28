@@ -7,8 +7,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
 
+import org.carlspring.beans.mapper.AnnotationMappingBuilder;
+
 /**
+ * Using this annotation, you must specify the target class for the properties,
+ * specified with {@link MappedProperty} annotation.
+ * 
  * @author Sergey Bespalov
+ * 
+ * @see {@link MappedProperty} {@link AnnotationMappingBuilder}
  * 
  */
 @Documented
