@@ -38,18 +38,11 @@ class BeanInvocationHandler implements InvocationHandler
             map.put(propertyName, propertyValue);
             return null;
         }
-        // TODO: method.getDeclaringClass().equals(Object.class) -> method.invoke(proxy, args)
-        else if (method.getName().equals("toString"))
+        // TODO: method.getDeclaringClass().equals(Object.class) ->
+        // method.invoke(proxy, args)
+        if (method.getDeclaringClass().equals(Object.class))
         {
-            return proxy.getClass().getName() + "@" + Integer.toHexString(hashCode());
-        }
-        else if (method.getName().equals("hashCode"))
-        {
-            return hashCode();
-        }
-        else if (method.getName().equals("equals"))
-        {
-            return proxy.equals(args[0]);
+            return method.invoke(map, args);
         }
         throw new RuntimeException("Failed to handle method invocation: method-[" + method + "].");
     }
