@@ -25,7 +25,7 @@ import org.carlspring.beans.mapper.markup.MappedProperty;
  * based on specific mappings. In general, a mappings is obtained based on the
  * POJO property names, an explicit mappings also possible using combination of
  * {@link MappedBean} and {@link MappedProperty} annotations.<br>
- * All currently available mappings are cached in the {@link MappingConfig}
+ * All currently used mappings are cached in the {@link MappingConfig}
  * instance, which is also provides specific {@link MappingProfile}.<br>
  * 
  * As mentioned above, almost all functionality provided by this class are
@@ -36,13 +36,13 @@ import org.carlspring.beans.mapper.markup.MappedProperty;
  * </pre>
  * 
  * You can merge a Collections, create Mixins or convert a POJOs from one
- * Class to another, but all of this will perform merge beans operation at the
+ * Class to another, but all of this will perform Merge beans operation at the
  * end.
  * 
  * 
  * @author Sergey Bespalov
  *
- * @see {@link BeanMapper}, {@link MappingConfig}, {@link MappingProfile}
+ * @see {@link MappingBuilder}, {@link MappingConfig}, {@link MappingProfile}
  */
 public class BeanMapper
 {
