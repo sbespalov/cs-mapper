@@ -19,6 +19,13 @@ import org.carlspring.beans.Identifiable;
 import org.carlspring.beans.mapper.converter.EntityConverter;
 import org.carlspring.beans.mapper.converter.LongConverter;
 
+/**
+ * This class builds mappings using POJO property names.
+ * 
+ * @author Sergey Bespalov
+ *
+ * @see {@link PropertyDescriptor}
+ */
 public class SimpleMappingBuilder implements MappingBuilder
 {
 

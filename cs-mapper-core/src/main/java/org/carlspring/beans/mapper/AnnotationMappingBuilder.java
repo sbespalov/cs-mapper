@@ -20,7 +20,12 @@ import org.reflections.ReflectionUtils;
 import com.google.common.base.Predicate;
 
 /**
+ * This class builds mappings with considering {@link MappedBean} and
+ * {@link MappedProperty} annotations.
+ * 
  * @author Sergey Bespalov
+ * 
+ * @see {@link MappedBean} {@link MappedProperty}
  */
 public class AnnotationMappingBuilder implements MappingBuilder
 {
