@@ -6,8 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class MappingConfig
 {
 
@@ -38,17 +36,16 @@ public class MappingConfig
     }
 
     public BeanMapping getBeanMapping(Class targetClass,
-                                      Class sourceClass,
-                                      String mappingId)
+                                      Class sourceClass)
     {
-        String key = createMappingKey(sourceClass.getName(), targetClass.getName(), mappingId);
+        String key = createMappingKey(sourceClass.getName(), targetClass.getName());
         BeanMapping result = mappings.get(key);
         if (result != null)
         {
             return result;
         }
 
-        key = createMappingKey(sourceClass.getName(), targetClass.getName(), null);
+        key = createMappingKey(sourceClass.getName(), targetClass.getName());
         result = mappings.get(key);
         if (result != null)
         {
@@ -105,16 +102,13 @@ public class MappingConfig
 
     private String createMappingKey(BeanMapping beanMapping)
     {
-        return createMappingKey(beanMapping.getSourceClass().getName(), beanMapping.getTargetClass().getName(),
-                                beanMapping.getMappingId());
+        return createMappingKey(beanMapping.getSourceClass().getName(), beanMapping.getTargetClass().getName());
     }
 
     private String createMappingKey(String sourceClass,
-                                    String targetClass,
-                                    String mappingId)
+                                    String targetClass)
     {
-        return (StringUtils.isBlank(mappingId) ? "" : "[" + mappingId + "]-") + "[" + sourceClass + "]-[" + targetClass
-                + "]";
+        return "[" + sourceClass + "]-[" + targetClass + "]";
     }
 
 }

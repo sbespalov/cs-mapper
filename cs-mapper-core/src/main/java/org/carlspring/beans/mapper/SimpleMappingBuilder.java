@@ -24,7 +24,6 @@ public class SimpleMappingBuilder implements MappingBuilder
 
     private static final Logger LOGGER = Logger.getLogger(SimpleMappingBuilder.class.getName());
 
-    private String mappingId;
     private Class<?> targetClass;
     private Class<?> sourceClass;
     private Set<String> excludeProperties = new HashSet<String>();
@@ -81,16 +80,6 @@ public class SimpleMappingBuilder implements MappingBuilder
         this.reverceMapping = reverceMapping;
     }
 
-    public String getMappingId()
-    {
-        return mappingId;
-    }
-
-    public void setMappingId(String mappingId)
-    {
-        this.mappingId = mappingId;
-    }
-
     public void addExcludeProperty(String propertyName)
     {
         excludeProperties.add(propertyName);
@@ -124,7 +113,6 @@ public class SimpleMappingBuilder implements MappingBuilder
 
         beanMapping.setSourceClass(getSourceClass());
         beanMapping.setTargetClass(getTargetClass());
-        beanMapping.setMappingId(getMappingId());
 
         addConverters();
 
@@ -415,12 +403,11 @@ public class SimpleMappingBuilder implements MappingBuilder
 
     private BeanMapping buildReverceMapping(BeanMapping beanMapping)
     {
-        BeanMapping reverveMapping = new BeanMapping();
+        BeanMapping reverceMapping = new BeanMapping();
         List<PropertyMapping> reverceMappings = new ArrayList<PropertyMapping>();
-        reverveMapping.setPropertyMappings(reverceMappings);
-        reverveMapping.setSourceClass(beanMapping.getTargetClass());
-        reverveMapping.setTargetClass(beanMapping.getSourceClass());
-        reverveMapping.setMappingId(beanMapping.getMappingId());
+        reverceMapping.setPropertyMappings(reverceMappings);
+        reverceMapping.setSourceClass(beanMapping.getTargetClass());
+        reverceMapping.setTargetClass(beanMapping.getSourceClass());
         List<PropertyMapping> propertyMappings = beanMapping.getPropertyMappings();
         for (PropertyMapping propertyMapping : propertyMappings)
         {
@@ -429,7 +416,7 @@ public class SimpleMappingBuilder implements MappingBuilder
             revercePropertyMapping.setTargetProperty(propertyMapping.getSrcProperty());
             reverceMappings.add(revercePropertyMapping);
         }
-        return reverveMapping;
+        return reverceMapping;
     }
 
 }

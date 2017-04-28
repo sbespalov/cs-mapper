@@ -16,13 +16,33 @@ import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.collections.iterators.ArrayIterator;
+import org.carlspring.beans.mapper.markup.MappedBean;
+import org.carlspring.beans.mapper.markup.MappedProperty;
 
 /**
- * BeanMapper provide functionality for merge POJO objects of different classes,
- * based on specific mappings.
+ * BeanMapper provides functionality for merge POJO objects of different
+ * classes,
+ * based on specific mappings. In general, a mappings is obtained based on the
+ * POJO property names, an explicit mappings also possible using combination of
+ * {@link MappedBean} and {@link MappedProperty} annotations.<br>
+ * All currently available mappings are cached in the {@link MappingConfig}
+ * instance, which is also provides specific {@link MappingProfile}.<br>
+ * 
+ * As mentioned above, almost all functionality provided by this class are
+ * reduced to call the main method:
+ * 
+ * <pre>
+ *  Object mergeBeans(Object targetObject, Object sourceObject, Class targetType, Class sourceType)
+ * </pre>
+ * 
+ * You can merge a Collections, create Mixins or convert a POJOs from one
+ * Class to another, but all of this will perform merge beans operation at the
+ * end.
+ * 
  * 
  * @author Sergey Bespalov
  *
+ * @see {@link BeanMapper}, {@link MappingConfig}, {@link MappingProfile}
  */
 public class BeanMapper
 {
@@ -79,15 +99,6 @@ public class BeanMapper
                              Class targetType,
                              Class sourceType)
     {
-        return mergeBeans(targetObject, sourceObject, targetType, sourceType, null);
-    }
-
-    public Object mergeBeans(Object targetObject,
-                             Object sourceObject,
-                             Class targetType,
-                             Class sourceType,
-                             String mappingId)
-    {
         if (targetObject == null)
         {
             targetObject = CSBeanUtils.createInstance(sourceType);
@@ -96,8 +107,8 @@ public class BeanMapper
         {
             return targetObject;
         }
-        List<PropertyMapping> propertyMappings = getPropertyMappings(targetObject, sourceObject, targetType, sourceType,
-                                                                     mappingId);
+        List<PropertyMapping> propertyMappings = getPropertyMappings(targetObject, sourceObject, targetType,
+                                                                     sourceType);
         for (PropertyMapping propertyMapping : propertyMappings)
         {
             String targetPropertyName = propertyMapping.getTargetProperty().getPropertyName();
@@ -157,12 +168,11 @@ public class BeanMapper
     private List<PropertyMapping> getPropertyMappings(Object targetObject,
                                                       Object sourceObject,
                                                       Class targetType,
-                                                      Class sourceType,
-                                                      String mappingId)
+                                                      Class sourceType)
     {
         if (!Map.class.isAssignableFrom(targetType) || !Map.class.isAssignableFrom(sourceType))
         {
-            BeanMapping beanMapping = getMappingConfig().getBeanMapping(targetType, sourceType, mappingId);
+            BeanMapping beanMapping = getMappingConfig().getBeanMapping(targetType, sourceType);
             return beanMapping.getPropertyMappings();
         }
 
@@ -262,46 +272,23 @@ public class BeanMapper
     public Object convertObject(Object object,
                                 Class targetType)
     {
-        return convertObject(object, targetType, (String) null);
-    }
-
-    public Object convertObject(Object object,
-                                Class targetType,
-                                String mappingId)
-    {
         if (object == null)
         {
             return null;
         }
-        return convertObject(object, targetType, extractType(object), mappingId);
+        return convertObject(object, targetType, extractType(object));
     }
 
     public Object convertObject(Object object,
                                 Class targetType,
                                 Class sourceType)
     {
-        return convertObject(object, targetType, sourceType, null);
-    }
-
-    public Object convertObject(Object object,
-                                Class targetType,
-                                Class sourceType,
-                                String mappingId)
-    {
-        return mergeInternal(null, object, targetType, sourceType, mappingId);
+        return mergeInternal(null, object, targetType, sourceType);
     }
 
     public Collection convertCollection(Collection targetCollection,
                                         Collection sourceCollection,
                                         Class targetType)
-    {
-        return convertCollection(targetCollection, sourceCollection, targetType, (String) null);
-    }
-
-    public Collection convertCollection(Collection targetCollection,
-                                        Collection sourceCollection,
-                                        Class targetType,
-                                        String mappingId)
     {
         if (sourceCollection == null)
         {
@@ -309,7 +296,7 @@ public class BeanMapper
         }
         for (Object object : sourceCollection)
         {
-            targetCollection.add(convertObject(object, targetType, mappingId));
+            targetCollection.add(convertObject(object, targetType));
         }
         return targetCollection;
     }
@@ -319,18 +306,9 @@ public class BeanMapper
                                         Class targetType,
                                         Class sourceType)
     {
-        return convertCollection(targetCollection, sourceCollection, targetType, sourceType, null);
-    }
-
-    public Collection convertCollection(Collection targetCollection,
-                                        Collection sourceCollection,
-                                        Class targetType,
-                                        Class sourceType,
-                                        String mappingId)
-    {
         for (Object object : sourceCollection)
         {
-            targetCollection.add(convertObject(object, targetType, sourceType, mappingId));
+            targetCollection.add(convertObject(object, targetType, sourceType));
         }
         return targetCollection;
     }
@@ -406,10 +384,9 @@ public class BeanMapper
     }
 
     private BeanMapping getBeanMapping(Class targetClass,
-                                       Class sourceClass,
-                                       String mappingId)
+                                       Class sourceClass)
     {
-        return mappingConfig.getBeanMapping(targetClass, sourceClass, mappingId);
+        return mappingConfig.getBeanMapping(targetClass, sourceClass);
     }
 
     private Class extractType(Object targetObject)
@@ -473,15 +450,6 @@ public class BeanMapper
                                  Class targetType,
                                  Class sourceType)
     {
-        return mergeInternal(targetObject, sourceObject, targetType, sourceType, null);
-    }
-
-    private Object mergeInternal(Object targetObject,
-                                 Object sourceObject,
-                                 Class targetType,
-                                 Class sourceType,
-                                 String mappingId)
-    {
         if (!isMappingAllowedForType(targetType) || !isMappingAllowedForType(sourceType)
                 || Object.class.equals(targetType) || Object.class.equals(sourceType))
         {
@@ -495,7 +463,7 @@ public class BeanMapper
         {
             targetObject = CSBeanUtils.createBeanInstance(targetType);
         }
-        targetObject = mergeBeans(targetObject, sourceObject, targetType, sourceType, mappingId);
+        targetObject = mergeBeans(targetObject, sourceObject, targetType, sourceType);
         return targetObject;
     }
 

@@ -11,18 +11,7 @@ public class BeanMapping
 
     private Class sourceClass;
     private Class targetClass;
-    private String mappingId;
     private List<PropertyMapping> propertyMappings = new ArrayList<PropertyMapping>();
-
-    public String getMappingId()
-    {
-        return mappingId;
-    }
-
-    public void setMappingId(String mappingId)
-    {
-        this.mappingId = mappingId;
-    }
 
     public Class getSourceClass()
     {
