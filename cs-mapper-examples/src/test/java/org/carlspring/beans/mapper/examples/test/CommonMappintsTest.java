@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class CommonMappintsTest extends ConfigurationTest
 {
-    private static final String COLL_PET_STORE = "Coll Pet Store";
+    private static final String COLL_PET_STORE = "Cool Pet Store";
 
     @PersistenceContext
     private EntityManager entityManager;
