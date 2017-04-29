@@ -4,10 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.carlspring.beans.mapper.BeanMapper;
-import org.carlspring.beans.mapper.CSBeanUtils;
 import org.carlspring.beans.mapper.examples.api.dto.PetStoreReadDto;
 import org.carlspring.beans.mapper.examples.domain.PetEntity;
-import org.carlspring.beans.mapper.examples.domain.PetStore;
 import org.carlspring.beans.mapper.examples.domain.PetStoreEntity;
 import org.carlspring.beans.mapper.examples.repository.PetStoreReposytory;
 import org.junit.Assert;
