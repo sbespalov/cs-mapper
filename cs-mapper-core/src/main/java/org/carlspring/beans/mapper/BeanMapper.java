@@ -67,6 +67,20 @@ public class BeanMapper
         return mappingConfig;
     }
 
+    /**
+     * With this method you can combine multiply Domain DTO interfaces in one
+     * resulting Mixin Interface, and populate it with values of source objects
+     * properties.
+     * 
+     * @param targetClass
+     *            the Mixin interface, which can extend a set of Domain DTO
+     *            Interfaces.
+     * @param sourceObject
+     *            POJOs to merge their property values in resulting Mixin
+     * @return Mixin POJO instance, which is the JDK Proxy, based on HashMap of
+     *         POJO property names and values..
+     * 
+     */
     public Object createMixin(Class targetClass,
                               Object... sourceObject)
     {
@@ -78,6 +92,14 @@ public class BeanMapper
         return result;
     }
 
+    /**
+     * Merge property values from source POJO into target POJO, using
+     * appropriate mappings.
+     * 
+     * @param targetObject
+     * @param sourceObject
+     * @return
+     */
     public Object mergeBeans(Object targetObject,
                              Object sourceObject)
     {
@@ -94,6 +116,16 @@ public class BeanMapper
         return mergeBeans(targetObject, sourceObject, targetType, sourceType);
     }
 
+    /**
+     * Merge property values from source POJO into target POJO, using
+     * sourceType->targetType mappings.
+     * 
+     * @param targetObject
+     * @param sourceObject
+     * @param targetType
+     * @param sourceType
+     * @return
+     */
     public Object mergeBeans(Object targetObject,
                              Object sourceObject,
                              Class targetType,
@@ -269,6 +301,14 @@ public class BeanMapper
         return orphanElements;
     }
 
+    /**
+     * Creates a targetType POJO instance and populate it with source POJO
+     * property values, using appropriate mappings.
+     * 
+     * @param object
+     * @param targetType
+     * @return
+     */
     public Object convertObject(Object object,
                                 Class targetType)
     {
@@ -279,6 +319,15 @@ public class BeanMapper
         return convertObject(object, targetType, extractType(object));
     }
 
+    /**
+     * Creates a targetType POJO instance and populate it with source POJO
+     * property values, using sourceType->targetType mappings.
+     * 
+     * @param object
+     * @param targetType
+     * @param sourceType
+     * @return
+     */
     public Object convertObject(Object object,
                                 Class targetType,
                                 Class sourceType)
@@ -286,6 +335,15 @@ public class BeanMapper
         return mergeInternal(null, object, targetType, sourceType);
     }
 
+    /**
+     * Merge Target Collection items with Source Collection items, using
+     * sourceCollectionElementType->targetType mappings.
+     * 
+     * @param targetCollection
+     * @param sourceCollection
+     * @param targetType
+     * @return
+     */
     public Collection convertCollection(Collection targetCollection,
                                         Collection sourceCollection,
                                         Class targetType)
@@ -301,6 +359,16 @@ public class BeanMapper
         return targetCollection;
     }
 
+    /**
+     * Merge Target Collection items with Source Collection items, using
+     * sourceType->targetType mappings.
+     * 
+     * @param targetCollection
+     * @param sourceCollection
+     * @param targetType
+     * @param sourceType
+     * @return
+     */
     public Collection convertCollection(Collection targetCollection,
                                         Collection sourceCollection,
                                         Class targetType,

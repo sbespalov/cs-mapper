@@ -39,11 +39,12 @@ public class DefaultMappingProfile implements MappingProfile
     public DefaultMappingProfile()
     {
         super();
+        registerDefault();
     }
 
     public DefaultMappingProfile(EntityManagerLocator entityManagerLocator)
     {
-        super();
+        this();
         this.entityManagerLocator = entityManagerLocator;
     }
 

@@ -26,12 +26,17 @@ public class EntityConverter extends AbstractConverter
         throws Throwable
     {
         EntityManager entityManager = entityManagerLocator.lookupEntityManager();
-        
-        if (value != null)
+
+        if (value instanceof Long)
         {
             return entityManager.find(type, (Long) value);
         }
         return null;
+    }
+
+    public EntityManagerLocator getEntityManagerLocator()
+    {
+        return entityManagerLocator;
     }
 
     @Override
