@@ -121,6 +121,12 @@ public class AnnotationMappingBuilder implements MappingBuilder
                                                  targetProperty));
                         mappingBuilder.addCustomMapping(propertyDescriptor.getName(), targetProperty);
                     }
+                    
+                    Class<?> targetType = csProperty.targetPropertyType();
+                    if (targetType != null && !Object.class.equals(targetType))
+                    {
+                        mappingBuilder.addTargetCustomType(targetProperty, targetType);
+                    }
                 }
             }
             mappingBuilders.add(mappingBuilder);

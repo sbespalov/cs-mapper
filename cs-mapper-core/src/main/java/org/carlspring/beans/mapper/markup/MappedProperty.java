@@ -30,5 +30,7 @@ public @interface MappedProperty
 {
 
     public String value();
+    
+    public Class<?> targetPropertyType() default Object.class;
 
 }
