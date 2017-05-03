@@ -79,12 +79,9 @@ public class DefaultMappingProfile implements MappingProfile
                                   Converter converter)
     {
         Converter mappedConverter = converters.get(type);
-        if (mappedConverter == null || mappedConverter.getClass() != converter.getClass())
-        {
-            converters.put(type, converter);
-            LOGGER.log(Level.INFO,
-                       String.format("Converter registered: class-[%s]; converter-[%s];", type, converter));
-        }
+        converters.put(type, converter);
+        LOGGER.log(Level.INFO,
+                   String.format("Converter registered: class-[%s]; converter-[%s];", type, converter));
     }
 
     public void registerDefault()
