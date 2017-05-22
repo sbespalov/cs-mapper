@@ -1,6 +1,7 @@
 package org.carlspring.beans.mapper.spring;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -14,10 +15,13 @@ import org.carlspring.beans.mapper.DefaultMappingProfile;
 import org.carlspring.beans.mapper.MappingConfig;
 import org.carlspring.beans.mapper.MappingProfile;
 import org.carlspring.beans.mapper.markup.MappedBean;
-import org.reflections.Reflections;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import io.github.lukehutch.fastclasspathscanner.classloaderhandler.WebSphereClassLoaderHandler;
+import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 
 /**
  * @author Sergey Bespalov
@@ -30,6 +34,7 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
     private MappingProfile mappingProfile;
     private Class<? extends BeanMapper> beanHelperClass;
     private String[] packagesToScan = new String[] {};
+    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     public BeanMapperFactoryBean()
     {
@@ -46,6 +51,11 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
         super();
         this.beanHelperClass = BeanMapper.class;
         this.mappingProfile = mappingProfile;
+    }
+
+    public void setClassLoader(ClassLoader classLoader)
+    {
+        this.classLoader = classLoader;
     }
 
     public void setPackagesToScan(String... packagesToScan)
@@ -98,35 +108,81 @@ public class BeanMapperFactoryBean implements FactoryBean<BeanMapper>, Initializ
         return mappingConfig;
     }
 
-    private void addMappings(MappingConfig mappingConfig)
+    private void addMappings(final MappingConfig mappingConfig)
     {
         List<Object> reflectionsConfig = new ArrayList<Object>();
         if (packagesToScan.length == 0)
         {
             return;
         }
-        
+
         for (String packageName : packagesToScan)
         {
             reflectionsConfig.add(packageName);
         }
-        reflectionsConfig.add(Thread.currentThread().getContextClassLoader());
 
-        Reflections reflections = new Reflections(reflectionsConfig.toArray(new Object[] {}));
-
-        for (Class<?> mappedClass : reflections.getTypesAnnotatedWith(MappedBean.class))
+        ScanResult scanResult = new FastClasspathScanner(
+                reflectionsConfig.toArray(new String[] {})).addClassLoader(classLoader)
+                                                           .registerClassLoaderHandler(WebSphereClassLoaderHandler.class)
+                                                           .verbose(true)
+                                                           .scan();
+        for (String mappedClassName : scanResult.getNamesOfClassesWithAnnotation(MappedBean.class))
         {
-            mappingConfig.registerMappings(new AnnotationMappingBuilder(mappingProfile, mappedClass));
-
-            Set<?> domainClasses = reflections.getSubTypesOf(mappedClass);
-            for (Object dtoClass : domainClasses)
+            Class<?> mappedClass;
+            try
             {
+                mappedClass = Class.forName(mappedClassName);
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new RuntimeException(e);
+            }
+            mappingConfig.registerMappings(new AnnotationMappingBuilder(
+                    mappingProfile,
+                    mappedClass));
+            LOGGER.log(Level.INFO, String.format("DTO mapping registered: class-[%s]", mappedClass));
+
+            Set<String> mappedSubClassNameSet = new HashSet<String>(scanResult.getNamesOfSubclassesOf(mappedClassName));
+            mappedSubClassNameSet.addAll(scanResult.getNamesOfClassesImplementing(mappedClassName));
+
+            for (String mappedSubClassName : mappedSubClassNameSet)
+            {
+                Class dtoClass;
+                try
+                {
+                    dtoClass = Class.forName(mappedSubClassName);
+                }
+                catch (ClassNotFoundException e)
+                {
+                    throw new RuntimeException(e);
+                }
+
                 mappingConfig.registerMappings(new AnnotationMappingBuilder(mappingProfile,
                         (Class) dtoClass));
-                LOGGER.log(Level.FINE, String.format("DTO mapping registered: class-[%s]", dtoClass));
+                LOGGER.log(Level.INFO, String.format("DTO mapping registered: class-[%s]", dtoClass));
 
             }
         }
+
+        // scanResult.getNamesOfSubclassesOf(superclass)
+
+        // for (Class<?> mappedClass :
+        // reflections.getTypesAnnotatedWith(MappedBean.class))
+        // {
+        // mappingConfig.registerMappings(new
+        // AnnotationMappingBuilder(mappingProfile, mappedClass));
+        //
+        // Set<?> domainClasses = reflections.getSubTypesOf(mappedClass);
+        // for (Object dtoClass : domainClasses)
+        // {
+        // mappingConfig.registerMappings(new
+        // AnnotationMappingBuilder(mappingProfile,
+        // (Class) dtoClass));
+        // LOGGER.log(Level.FINE, String.format("DTO mapping registered:
+        // class-[%s]", dtoClass));
+        //
+        // }
+        // }
     }
 
     public BeanMapper getObject()
