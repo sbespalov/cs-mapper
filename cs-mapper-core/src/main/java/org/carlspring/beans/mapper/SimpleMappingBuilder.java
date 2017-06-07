@@ -177,10 +177,6 @@ public class SimpleMappingBuilder implements MappingBuilder
             return;
         }
         Map<Class, Converter> converters = defaultProfile.getConverters();
-        if (Identifiable.class.isAssignableFrom(sourceClass) || Identifiable.class.isAssignableFrom(targetClass))
-        {
-            defaultProfile.registerConverter(Long.class, new LongConverter());
-        }
         if (isEntityClass(sourceClass))
         {
             defaultProfile.registerConverter(sourceClass,
@@ -192,6 +188,10 @@ public class SimpleMappingBuilder implements MappingBuilder
             defaultProfile.registerConverter(targetClass,
                                              new EntityConverter(defaultProfile.getEntityManagerLocator(),
                                                      (Class<? extends Identifiable>) targetClass));
+        }        
+        if (Identifiable.class.isAssignableFrom(sourceClass) || Identifiable.class.isAssignableFrom(targetClass))
+        {
+            defaultProfile.registerConverter(Long.class, new LongConverter());
         }
     }
 
