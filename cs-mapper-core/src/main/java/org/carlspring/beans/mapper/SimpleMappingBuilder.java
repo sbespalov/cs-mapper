@@ -191,7 +191,7 @@ public class SimpleMappingBuilder implements MappingBuilder
         }        
         if (Identifiable.class.isAssignableFrom(sourceClass) || Identifiable.class.isAssignableFrom(targetClass))
         {
-            defaultProfile.registerConverter(Long.class, new LongConverter());
+            defaultProfile.registerConverter(Long.class, new LongConverter(), true);
         }
     }
 
