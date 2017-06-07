@@ -78,7 +78,17 @@ public class DefaultMappingProfile implements MappingProfile
     public void registerConverter(Class type,
                                   Converter converter)
     {
-        converters.put(type, converter);
+        registerConverter(type, converter, false);
+    }
+    
+    public synchronized void registerConverter(Class type,
+                                  Converter converter, 
+                                  boolean force)
+    {
+        if (!converters.containsKey(type) || Boolean.TRUE.equals(force))
+        {
+            converters.put(type, converter);
+        }
         LOGGER.log(Level.INFO,
                    String.format("Converter registered: class-[%s]; converter-[%s];", type, converter));
     }
