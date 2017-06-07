@@ -88,9 +88,9 @@ public class DefaultMappingProfile implements MappingProfile
         if (!converters.containsKey(type) || Boolean.TRUE.equals(force))
         {
             converters.put(type, converter);
+            LOGGER.log(Level.INFO,
+                       String.format("Converter registered: class-[%s]; converter-[%s];", type, converter));            
         }
-        LOGGER.log(Level.INFO,
-                   String.format("Converter registered: class-[%s]; converter-[%s];", type, converter));
     }
 
     public void registerDefault()
