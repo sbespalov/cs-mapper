@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.carlspring.beans</groupId>
 		<artifactId>cs-mapper-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 		<relativePath>../cs-mapper-parent/pom.xml</relativePath>
 	</parent>
 
