@@ -51,6 +51,7 @@ public class DomainDtoDoclet
     {
         skipAnnotations.add("javax.persistence.Transient");
         skipAnnotations.add("javax.persistence.OneToMany");
+        skipAnnotations.add("javax.persistence.ManyToMany");
 
         nesteedAnnotations.add("javax.persistence.OneToOne");
         nesteedAnnotations.add("javax.persistence.ManyToOne");
